@@ -1,0 +1,1342 @@
+<title>서강 한 바퀴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --outer: #E9EBEE; --bg: #FFFFFF; --ink: #1B1D21; --ink2: #3A3F47; --muted: #6B7280; --line: #ECEDF0; --line2: #D9DCE1;
+  --soft: #F2F3F5; --soft2: #F7F8F9; --accent: #D2352B; --accent-ink: #B02A20; --accent-weak: #FCEBE9; --on-accent: #FFFFFF;
+  --bar: #E8EDFB; --bar-ink: #2447B5; --warn: #FBF1D6; --warn-ink: #7A5A00; --inv: #1B1D21; --on-inv: #FFFFFF;
+  --banner: #D2352B; --on-banner: #FFFFFF; --cafe: #B7791F;
+  --dim: #9AA1AC; --scrim: rgba(16,18,22,.5); --shadow: 0 2px 10px rgba(16,18,22,.16); --map: #EEF1F3; --ring: #C9CFD6; --pin-line: #6B7280;
+  --font: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --outer: #0B0C0E; --bg: #121316; --ink: #ECEDEF; --ink2: #C5C8CE; --muted: #9AA1AC; --line: #23262B; --line2: #343840;
+    --soft: #1C1E23; --soft2: #17191D; --accent: #FF6B5F; --accent-ink: #FF9A91; --accent-weak: #3A1B19; --on-accent: #1B0C0A;
+    --bar: #1E2742; --bar-ink: #9DB4FF; --warn: #3A2F10; --warn-ink: #F2C85B; --inv: #ECEDEF; --on-inv: #121316;
+    --banner: #B3261E; --on-banner: #FFFFFF; --cafe: #F2C85B;
+    --dim: #6B7280; --scrim: rgba(0,0,0,.65); --shadow: 0 2px 10px rgba(0,0,0,.5); --map: #181B1F; --ring: #353A42; --pin-line: #9AA1AC;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --outer: #0B0C0E; --bg: #121316; --ink: #ECEDEF; --ink2: #C5C8CE; --muted: #9AA1AC; --line: #23262B; --line2: #343840;
+  --soft: #1C1E23; --soft2: #17191D; --accent: #FF6B5F; --accent-ink: #FF9A91; --accent-weak: #3A1B19; --on-accent: #1B0C0A;
+  --bar: #1E2742; --bar-ink: #9DB4FF; --warn: #3A2F10; --warn-ink: #F2C85B; --inv: #ECEDEF; --on-inv: #121316;
+  --banner: #B3261E; --on-banner: #FFFFFF; --cafe: #F2C85B;
+    --dim: #6B7280; --scrim: rgba(0,0,0,.65); --shadow: 0 2px 10px rgba(0,0,0,.5); --map: #181B1F; --ring: #353A42; --pin-line: #9AA1AC;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--outer); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; word-break: keep-all; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#app { max-width: 480px; min-height: 100vh; margin: 0 auto; background: var(--bg); position: relative; padding-bottom: 88px; }
+.view { display: flex; flex-direction: column; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.pad { padding-inline: 16px; }
+
+/* 공통 부품 */
+.chip { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; border-radius: 4px; padding: 2px 6px; background: var(--soft); color: var(--ink2); white-space: nowrap; }
+.chip.bar { background: var(--bar); color: var(--bar-ink); }
+.chip.warn { background: var(--warn); color: var(--warn-ink); }
+.pill { flex: none; font: 600 12px var(--font); background: var(--soft); border-radius: 999px; padding: 5px 9px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pill .mono { font-family: var(--mono); }
+.pill.off { color: var(--muted); background: var(--line); }
+.pill.unk { color: var(--muted); background: transparent; border: 1px dashed var(--line2); }
+.pbtn { min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid var(--line2); background: var(--bg); color: var(--ink); font-size: 14px; font-weight: 500; }
+.pbtn[aria-pressed="true"], .pbtn.on { border: 2px solid var(--accent); background: var(--accent-weak); color: var(--accent-ink); font-weight: 700; padding: 0 15px; }
+.pbtn.zero { border-style: dashed; color: var(--muted); }
+.cta { min-height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 0; background: var(--accent); color: var(--on-accent); font-size: 16px; font-weight: 700; width: 100%; }
+.ghost { min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid var(--line2); background: var(--bg); font-size: 14px; font-weight: 600; }
+.sec-title { font-size: 15px; font-weight: 700; }
+.muted { color: var(--muted); }
+.ibtn { width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.empty { margin: 16px; padding: 28px 16px; border: 1px solid var(--line); border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.empty .t { font-size: 16px; font-weight: 700; }
+.empty .s { font-size: 13px; color: var(--muted); }
+.empty .acts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.empty .acts .pbtn.primary { background: var(--accent); color: var(--on-accent); border: 0; font-weight: 600; }
+
+/* 하단 탭 */
+.tabbar { position: fixed; z-index: 5; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: calc(64px + env(safe-area-inset-bottom, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); border-top: 1px solid var(--line); display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+.tabbar button { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--muted); font-size: 11px; font-weight: 500; }
+.tabbar button[aria-current="page"] { color: var(--accent); font-weight: 600; }
+
+/* 홈 */
+.home-head { padding: 20px 16px 4px; display: flex; flex-direction: column; gap: 2px; }
+.brand { font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+.brand-sub { font-size: 13px; color: var(--muted); }
+.fakeinput { margin: 12px 16px 0; height: 48px; width: calc(100% - 32px); display: flex; align-items: center; gap: 10px; padding: 0 16px; background: var(--soft); border: 0; border-radius: 24px; color: var(--muted); font-size: 15px; text-align: left; }
+.banner { margin: 12px 16px 0; min-height: 64px; width: calc(100% - 32px); border: 0; border-radius: 14px; background: var(--banner); color: var(--on-banner); display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; text-align: left; }
+.banner b { font-size: 16px; display: block; }
+.banner span.s { font-size: 12px; opacity: .9; }
+.banner .cnt { font: 700 24px var(--font); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.banner .cnt small { font-size: 14px; font-weight: 600; margin-left: 2px; }
+.block { padding: 22px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+.situ { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; }
+.situ button { grid-column: span 3; min-height: 76px; border: 0; border-radius: 14px; background: var(--soft); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 13px; font-weight: 600; padding: 6px 2px; }
+.situ button.w4 { grid-column: span 4; }
+.situ button small { font-size: 11px; color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.kwg { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .02em; margin-top: 6px; }
+.pbtn.kw { min-height: 38px; padding: 0 12px; font-size: 14px; }
+.pbtn.kw small { color: var(--muted); font-size: 12px; margin-left: 2px; }
+.sec-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.sec-row button { border: 0; background: transparent; color: var(--accent-ink); font-size: 13px; font-weight: 600; min-height: 44px; padding: 0 2px; }
+.notice { margin: 22px 16px 0; padding: 12px 14px; border-radius: 12px; background: var(--soft); font-size: 13px; color: var(--ink2); line-height: 1.55; }
+
+/* 목록 */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; background: var(--bg); padding: 8px 8px 8px 4px; display: flex; align-items: center; gap: 4px; border-bottom: 1px solid var(--line); }
+.topbar .search { flex: 1; min-width: 0; height: 44px; border-radius: 22px; border: 0; background: var(--soft); padding: 0 16px; font-size: 15px; }
+.fbtn { flex: none; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid var(--line2); background: var(--bg); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.fbtn.on { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-weak); }
+/* 분류 대기 정리 */
+.trimsg { margin: 8px 16px 0; padding: 10px 12px; border-radius: 12px; background: var(--accent-weak); color: var(--accent-ink); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.trimsg.err { background: var(--bg2, var(--accent-weak)); color: var(--danger, var(--accent-ink)); }
+.trimsg button { border: 0; background: transparent; color: inherit; font-weight: 700; text-decoration: underline; min-height: 36px; }
+.tri { display: flex; flex-direction: column; gap: 10px; padding: 12px 16px 24px; }
+.tricard { border: 1px solid var(--line2); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.tritop { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.tritop b { font-size: 16px; }
+.trimeta { font-size: 12px; color: var(--muted); }
+.triinfo { font-size: 12px; color: var(--muted); line-height: 1.45; overflow-wrap: anywhere; }
+.trichips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.pbtn.tri { min-height: 40px; padding: 0 12px; font-size: 14px; display: inline-flex; align-items: center; text-decoration: none; }
+.pbtn.tri.map { color: var(--muted); border-style: dashed; }
+.sumline { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px 4px; }
+.sumline .l { font-size: 14px; font-weight: 700; }
+.seg { display: inline-flex; border: 1px solid var(--line2); border-radius: 18px; overflow: hidden; }
+.seg button { min-height: 36px; padding: 0 12px; border: 0; background: transparent; font-size: 13px; font-weight: 500; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--inv); color: var(--on-inv); font-weight: 600; }
+.activef { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 16px 0; }
+.activef button { min-height: 32px; border: 0; border-radius: 16px; background: var(--accent-weak); color: var(--accent-ink); font-size: 12px; font-weight: 600; padding: 0 10px; }
+.rows { display: flex; flex-direction: column; padding: 8px 16px 0; gap: 8px; }
+.row { cursor: pointer; width: 100%; display: flex; gap: 12px; align-items: center; padding: 12px; border: 0; border-radius: 14px; background: transparent; text-align: left; border: 1px solid var(--line); }
+.row.pend { border: 1px dashed var(--dim); }
+.row.off { background: var(--soft2); border-color: transparent; }
+.row .tile { flex: none; width: 64px; height: 64px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; background: var(--soft); color: var(--ink2); text-align: center; line-height: 1.2; padding: 4px; }
+.row .tile.bar { background: var(--bar); color: var(--bar-ink); }
+.row .tile.warn { background: var(--warn); color: var(--warn-ink); }
+.row .tile.inv { background: var(--inv); color: var(--on-inv); font: 600 15px var(--mono); }
+.row .tile.off { background: var(--line); color: var(--muted); }
+.side { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.favbtn { width: 40px; height: 34px; border: 0; border-radius: 17px; background: transparent; color: var(--muted); display: inline-flex; align-items: center; justify-content: center; }
+.favbtn[aria-pressed="true"] { color: var(--accent); }
+.favbtn.top { position: absolute; right: 8px; top: 8px; width: 44px; height: 44px; border-radius: 50%; background: var(--bg); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.row .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.row .nm { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.row .nm b { font-size: 16px; font-weight: 700; overflow-wrap: anywhere; }
+.row .meta { font-size: 12px; color: var(--muted); }
+.row .tags { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row.off .nm b { color: var(--muted); }
+
+/* 시트 */
+.scrim { position: fixed; inset: 0; z-index: 20; background: var(--scrim); display: flex; justify-content: center; align-items: flex-end; }
+.sheet { width: 100%; max-width: 480px; height: calc(100% - 72px); background: var(--bg); border-radius: 20px 20px 0 0; display: flex; flex-direction: column; overflow: hidden; }
+.sheet .grab { height: 22px; display: flex; align-items: center; justify-content: center; flex: none; }
+.sheet .grab i { width: 40px; height: 4px; border-radius: 2px; background: var(--line2); }
+.sheet .hd { padding: 0 16px; min-height: 44px; display: flex; align-items: center; justify-content: space-between; flex: none; }
+.sheet .hd b { font-size: 18px; }
+.sheet .hd button { border: 0; background: transparent; min-height: 44px; padding: 0 4px; font-size: 14px; color: var(--muted); }
+.sheet .scr { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 12px; }
+.sheet .ft { flex: none; padding: 12px 16px calc(20px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.grid3 .pbtn { border-radius: 10px; padding: 0 4px; }
+.toggle { margin: 22px 16px 0; min-height: 56px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); }
+.sw { position: relative; width: 50px; height: 30px; border-radius: 15px; background: var(--line2); border: 0; padding: 0; }
+.sw i { position: absolute; left: 3px; top: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .15s; }
+.sw[aria-checked="true"] { background: var(--accent); }
+.sw[aria-checked="true"] i { transform: translateX(20px); }
+.hint { font-size: 12px; color: var(--muted); }
+
+/* 지도 */
+.mapchips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px 0; scrollbar-width: none; background: var(--bg); }
+.mapchips::-webkit-scrollbar { display: none; }
+.mapchips .pbtn { flex: none; }
+.locbar { display: flex; gap: 8px; padding: 12px 16px 0; flex-wrap: wrap; }
+.locbar .pbtn.primary { background: var(--accent); color: var(--on-accent); border: 0; font-weight: 700; }
+.nearmsg { margin: 10px 16px 0; padding: 8px 12px; border-radius: 10px; background: var(--inv); color: var(--on-inv); font-size: 12px; line-height: 1.5; }
+.nearhint { margin: 10px 16px 0; font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* 상세 */
+.hero { height: 180px; background: var(--soft); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 0 56px; text-align: center; }
+.hero .k { font-size: 30px; font-weight: 700; letter-spacing: -.02em; color: var(--ink2); }
+.hero .s { font-size: 12px; color: var(--muted); }
+.dtop { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; background: var(--bg); display: flex; align-items: center; padding: 6px 8px; }
+.dtop .sp { flex: 1; }
+.dtop .back { position: static; box-shadow: none; background: transparent; }
+.dtop .favbtn.top { position: static; box-shadow: none; background: transparent; }
+.back { position: absolute; left: 8px; top: 8px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.dhead { padding: 18px 16px 0; display: flex; flex-direction: column; gap: 8px; }
+.dhead h1 { font-size: 26px; font-weight: 700; letter-spacing: -.02em; line-height: 1.25; overflow-wrap: anywhere; }
+.dhead .chips { gap: 6px; }
+.facts { padding: 14px 16px 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.fact { background: var(--soft); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.fact span { font-size: 12px; color: var(--muted); }
+.fact b { font: 600 20px var(--mono); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.fact.inv { background: var(--inv); color: var(--on-inv); }
+.fact.inv span { color: var(--on-inv); opacity: .8; }
+.fact b.k { font: 700 18px var(--font); }
+.fact .sub { font-size: 11px; color: var(--muted); }
+.fact b.sm { font: 600 15px var(--font); }
+.tagline { padding: 14px 16px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tagline span { font-size: 13px; color: var(--ink2); background: var(--soft); border-radius: 999px; padding: 7px 12px; }
+.info { margin: 18px 16px 0; border-top: 1px solid var(--line); }
+.info .r { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.info .r > span:first-child { flex: none; width: 56px; font-size: 13px; color: var(--muted); }
+.info .r .v { font-size: 14px; display: flex; flex-direction: column; gap: 3px; min-width: 0; font-variant-numeric: tabular-nums; }
+.info .r .v .today { font-weight: 700; }
+.anchors { padding: 20px 16px 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.anchors::-webkit-scrollbar { display: none; }
+.anchors button { flex: none; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: var(--soft); font-size: 14px; font-weight: 500; }
+.anchors button.on { background: var(--inv); color: var(--on-inv); font-weight: 600; }
+.msec { padding: 14px 16px 0; scroll-margin-top: 8px; }
+.msec h3 { font-size: 16px; font-weight: 700; padding-bottom: 6px; }
+.mi { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 42px; border-top: 1px solid var(--line); font-size: 14px; }
+.mi span:first-child { overflow-wrap: anywhere; min-width: 0; }
+.mi .pr { flex: none; font: 600 14px var(--mono); font-variant-numeric: tabular-nums; }
+.nomenu { margin: 20px 16px 0; padding: 20px 16px; border-radius: 14px; background: var(--soft); display: flex; flex-direction: column; gap: 4px; }
+.nomenu b { font-size: 16px; }
+.nomenu p { font-size: 14px; line-height: 1.55; color: var(--ink2); }
+.dfoot { padding: 18px 16px 0; font-size: 12px; color: var(--muted); }
+.fixcta { position: fixed; z-index: 5; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px)); background: var(--bg); border-top: 1px solid var(--line); }
+.editbtn { margin: 16px 16px 0; align-self: flex-start; }
+
+/* 지도 요소 색 */
+
+/* 소개 */
+.about { padding: 20px 16px 0; display: flex; flex-direction: column; gap: 14px; }
+.about h2 { font-size: 22px; font-weight: 700; }
+.about p, .about li { font-size: 14px; line-height: 1.65; color: var(--ink2); }
+.about ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+
+/* 개발자 입력 */
+.dev { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.dev h2 { font-size: 18px; font-weight: 700; }
+.form { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+.lbl { font-size: 13px; font-weight: 500; color: var(--muted); }
+.dev input[type="text"], .dev input[type="number"], .dev input[type="date"], .dev select, .dev textarea { min-height: 44px; padding: 8px 12px; background: var(--bg); border: 1px solid var(--line2); border-radius: 8px; width: 100%; min-width: 0; }
+.kindset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.kindpick { display: flex; flex-wrap: wrap; gap: 8px; }
+.kindpick label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border: 1px solid var(--line2); border-radius: 999px; font-size: 14px; }
+.kindpick input, .solo-pick input { width: 16px; height: 16px; accent-color: var(--accent); }
+.solo-pick { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); font-weight: 700; }
+.btn.secondary { background: transparent; color: var(--accent-ink); }
+.btn.danger { background: transparent; border-color: var(--accent); color: var(--accent-ink); }
+.btn.danger.armed { background: var(--accent); color: var(--on-accent); }
+.status { min-height: 1.6em; font-size: 14px; }
+.status.err { color: var(--accent-ink); }
+.lock { overflow: hidden; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+.banner.pick { background: var(--accent-weak); color: var(--accent-ink); margin-top: 10px; }
+.banner.pick svg { flex: none; }
+.pk { padding: 0 16px 28px; display: flex; flex-direction: column; gap: 4px; }
+.pk .sec-title { margin-top: 16px; }
+.pk .chips { margin-top: 6px; }
+.pk .pbtn.ex[aria-pressed="true"] { border-color: var(--muted); background: var(--soft); color: var(--muted); text-decoration: line-through; font-weight: 600; }
+.pk .tg { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.pkcta { margin-top: 20px; }
+.pkres { margin-top: 18px; padding: 16px; border-radius: 16px; border: 2px solid var(--accent); background: var(--bg); display: flex; flex-direction: column; gap: 6px; }
+.pkres .lbl { font-size: 12px; font-weight: 700; color: var(--accent-ink); }
+.pkres .nm { font-size: 22px; font-weight: 800; overflow-wrap: anywhere; }
+.pkres .menu { font-size: 16px; font-weight: 600; }
+.pkres .meta { font-size: 13px; color: var(--muted); }
+.pkres .acts { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.pkres .acts .pbtn { flex: 1; min-width: 120px; }
+.pkmsg { margin-top: 18px; padding: 16px; border-radius: 14px; background: var(--soft); color: var(--ink2); font-size: 14px; }
+.pknote { font-size: 12px; color: var(--muted); margin-top: 14px; }
+.loginbar { margin: 12px 16px 0; padding: 14px 16px; border-radius: 14px; background: var(--soft); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--ink2); }
+.acts2 { display: flex; gap: 8px; flex-wrap: wrap; }
+.ghost.danger { color: var(--accent-ink); border-color: var(--accent); }
+.ghost.danger.armed { background: var(--accent); color: var(--on-accent); }
+.hint.err, .about .hint.err { color: var(--accent-ink); }
+button:disabled { opacity: .55; cursor: default; }
+</style>
+
+<div id="app">
+  <main id="main" aria-live="polite"></main>
+  <nav class="tabbar" id="tabbar" aria-label="주요 메뉴"></nav>
+</div>
+<div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="필터" tabindex="-1"></div></div>
+
+<template id="tpl-dev">
+  <section class="dev" id="dev-panel" aria-labelledby="dev-title">
+    <h2 id="dev-title">개발자 모드: 가게 입력</h2>
+    <p class="hint">저장하면 목록에 바로 나타납니다. 이름, 파는 음식, 분류만 있어도 저장됩니다. 가격은 직접 확인한 경우에만 넣고 확인일을 함께 적으십시오. 분류를 비워 두면 일반 이용자에게는 보이지 않습니다.</p>
+    <form class="form" id="form" autocomplete="off">
+      <div class="field"><label class="lbl" for="f-name">가게 이름</label><input type="text" id="f-name" required maxlength="60"></div>
+      <div class="field"><label class="lbl" for="f-category">분류</label><select id="f-category"></select></div>
+      <div class="field wide"><label class="lbl" for="f-food">파는 음식 (한 줄 요약)</label><input type="text" id="f-food" maxlength="120" placeholder="예: 짬뽕이 메인"></div>
+      <fieldset class="field wide kindset"><legend class="lbl">음식 종류 (여러 개 선택)</legend><div class="kindpick" id="f-kinds"></div></fieldset>
+      <div class="field wide">
+        <label class="lbl" for="f-features">특징 (쉼표 또는 줄바꿈으로 구분)</label>
+        <textarea id="f-features" rows="4" maxlength="1200" placeholder="예: 밥 무료, 해장하기 좋음"></textarea>
+        <span class="hint">짧은 태그로 적습니다. 목록에는 앞의 2개, 상세에는 전부 나옵니다.</span>
+      </div>
+      <div class="field wide">
+        <label class="lbl" for="f-menus">메뉴 (한 줄에 하나, 끝에 가격 선택. "## 섹션명" 줄로 구역 나누기)</label>
+        <textarea id="f-menus" rows="10" maxlength="20000" placeholder="예: 제육볶음 9000"></textarea>
+        <span class="hint">비운 채 저장하면 기존 메뉴가 지워지므로 한 번 더 확인합니다.</span>
+      </div>
+      <div class="field"><label class="lbl" for="f-price">대표 메뉴 가격 (원, 선택)</label><input type="number" id="f-price" min="0" step="100" inputmode="numeric"></div>
+      <div class="field"><label class="lbl" for="f-verified">가격 확인일 (선택)</label><input type="date" id="f-verified"></div>
+      <div class="field"><label class="lbl" for="f-dist">서강대 직선거리 (m, 선택)</label><input type="number" id="f-dist" min="0" step="1" inputmode="numeric"></div>
+      <div class="field"><label class="lbl" for="f-zone">구역</label><select id="f-zone"><option value="">없음</option><option>정문</option><option>남문</option><option>후문</option><option>기타</option></select></div>
+      <div class="field wide"><label class="lbl" for="f-address">주소 (선택)</label><input type="text" id="f-address" maxlength="120"></div>
+      <div class="field wide"><label class="lbl" for="f-map">네이버 지도 링크 (선택, https://naver.me/ 로 시작)</label><input type="text" id="f-map" maxlength="120"></div>
+      <div class="field wide"><label class="solo-pick"><input type="checkbox" id="f-solo"> 혼밥하기 좋은 곳</label></div>
+      <div class="field wide">
+        <label class="lbl" for="f-hours">영업시간 (선택. 예: 월-토 11:00-22:00; BT 15:00-17:00 / 일 휴무)</label>
+        <textarea id="f-hours" rows="2" maxlength="300"></textarea>
+        <span class="hint" id="f-hours-check"></span>
+      </div>
+    </form>
+    <div class="actions">
+      <button type="button" class="btn" id="save">저장</button>
+      <button type="button" class="btn secondary" id="reset">새로 입력</button>
+      <button type="button" class="btn danger" id="delete" hidden>삭제</button>
+    </div>
+    <p class="status" id="status" role="status"></p>
+    <hr style="border:0;border-top:1px solid var(--line);margin:24px 0">
+    <h2>데이터 가져오기</h2>
+    <p class="hint">내보낸 가게 JSON 파일을 올리면 같은 id의 가게를 덮어씁니다. 처음 옮길 때 한 번만 쓰십시오.</p>
+    <div class="field wide"><input type="file" id="imp-file" accept="application/json,.json"></div>
+    <div class="actions"><button type="button" class="btn secondary" id="imp-btn">가져오기</button></div>
+    <p class="status" id="imp-status" role="status"></p>
+    <h2 style="margin-top:20px">전체 내보내기</h2>
+    <p class="hint">지금 올라 있는 모든 가게를 JSON 파일로 내려받습니다. 백업용이며, 사이트 속 기본 목록을 새로 만들 때도 씁니다.</p>
+    <div class="actions"><button type="button" class="btn secondary" id="exp-btn">내보내기</button></div>
+    <p class="status" id="exp-status" role="status"></p>
+  </section>
+</template>
+
+<script>
+(function () {
+  'use strict';
+/*PARSE*/
+
+  var CATS = [
+    { key: 'value',   label: '가성비 맛집',  short: '가성비', desc: '한 끼가 1만원 이하로 확인된 곳' },
+    { key: 'decent',  label: '적당한 맛집',  short: '적당',   desc: '알아둘 만한 곳' },
+    { key: 'regular', label: '자주 갈 맛집', short: '자주 감', desc: '서강대생이 자주 찾는 곳' },
+    { key: 'cafe',    label: '카페',         short: '카페',   desc: '커피와 디저트' },
+    { key: 'bar',     label: '술집',         short: '술집',   desc: '안주와 식사를 곁들여 마시는 곳' },
+    { key: 'lounge',  label: '바',           short: '바',     desc: '술이 중심인 곳' }
+  ];
+  var PENDING = { key: '', label: '분류 대기', short: '분류 대기' };
+  var KINDS_MAIN = ['한식', '중식', '일식', '양식', '분식', '아시안', '고깃집', '기타'];
+  var KINDS_SUB = ['찌개·탕', '면', '밥·덮밥', '돈가스·튀김', '고기', '해장'];
+  var KINDS = KINDS_MAIN.concat(KINDS_SUB);
+  var ZONES = ['정문', '남문', '후문', '기타'];
+  var CLOSE_OPTS = [[0, '상관없음'], [22, '22시 이후'], [24, '24시 이후'], [26, '02시 이후'], [27, '03시 이후'], [29, '05시 이후']];
+  var FOODCATS = ['value', 'decent', 'regular'];
+  var DAY_LABEL = ['월', '화', '수', '목', '금', '토', '일'];
+
+  function emptyF() { return { close: 0, day: null, zone: '', cats: [], kinds: [], solo: false }; }
+  var state = { shops: [], loaded: false, dbOk: true, dev: false, view: 'home', stack: [], openId: null, q: '', f: emptyF(), sort: 'near', triZone: '', triLast: null, draft: null, editId: null, wipeArmed: false, ref: loadRef(), fav: loadFav(), user: null, authReady: false, favSync: false, accErr: '', accBusy: false, delArmed: false };
+  var db = null, mounted = false, els = {};
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---------- 작은 도우미 ----------
+  function h(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
+  function add(p) { for (var i = 1; i < arguments.length; i++) if (arguments[i]) p.appendChild(arguments[i]); return p; }
+  var ICON = {
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>',
+    home: '<path d="M4 11l8-7 8 7v9H4z"/>',
+    pin: '<path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2"/>',
+    info: '<circle cx="12" cy="12" r="8"/><path d="M12 11v5M12 8h.01"/>',
+    edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+    back: '<path d="M15 5l-7 7 7 7"/>',
+    list: '<path d="M5 7h14M5 12h14M5 17h14"/>',
+    filter: '<path d="M4 6h16M7 12h10M10 18h4"/>',
+    solo: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/>',
+    won: '<circle cx="12" cy="12" r="8"/><path d="M8 9l1.5 6L12 10l2.5 5L16 9"/>',
+    moon: '<path d="M19 14.5A7.5 7.5 0 0 1 9.5 5 7.5 7.5 0 1 0 19 14.5z"/>',
+    glass: '<path d="M6 4h12l-6 8z"/><path d="M12 12v7M8 20h8"/>',
+    cocktail: '<path d="M5 5h14l-7 8z"/><path d="M12 13v6M8 20h8"/><circle cx="17" cy="4" r="1.5"/>',
+    cup: '<path d="M5 8h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 9h2a2 2 0 0 1 0 4h-2"/>',
+    gate: '<path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-6h6v6"/>',
+    dice: '<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="15" cy="9" r="1"/><circle cx="9" cy="15" r="1"/>',
+    bowl: '<path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M9 7c0-1 1-1 1-2M14 7c0-1 1-1 1-2"/>',
+    heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+    door: '<path d="M7 20V5h10v15"/><path d="M5 20h14"/><circle cx="14" cy="13" r=".8"/>',
+    star: '<path d="M12 4l2.4 5 5.4.7-4 3.7 1 5.4L12 16.2 7.2 18.8l1-5.4-4-3.7 5.4-.7z"/>',
+    south: '<circle cx="12" cy="12" r="8"/><path d="M12 7v10M8 13l4 4 4-4"/>'
+  };
+  function svg(name, size, color) {
+    var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('width', size || 22); s.setAttribute('height', size || 22); s.setAttribute('viewBox', '0 0 24 24');
+    s.setAttribute('fill', 'none'); s.setAttribute('stroke', color || 'currentColor'); s.setAttribute('stroke-width', '1.8');
+    s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true');
+    s.innerHTML = ICON[name] || ''; return s;
+  }
+  function catOf(key) { return CATS.filter(function (c) { return c.key === key; })[0] || PENDING; }
+  function fmtPrice(n) { return n.toLocaleString('ko-KR'); }
+  function fmtT(min) { var m = min % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+  // ---------- 영업 시각 ----------
+  // 새벽 6시 전에는 전날 영업일로 본다(심야 영업이 아직 끝나지 않았을 수 있으므로).
+  function biz() {
+    var d = new Date(), m = d.getHours() * 60 + d.getMinutes(), day = (d.getDay() + 6) % 7;
+    if (m < 360) { day = (day + 6) % 7; m += 1440; }
+    return { day: day, min: m };
+  }
+  // 반환: {st:'open'|'off'|'unk', close, is24}
+  function dayInfo(s, d) {
+    if (!s.sched.week) return { st: 'unk' };
+    var v = s.sched.week[d];
+    if (v === null) return { st: 'off' };
+    if (v === undefined || v.sus) return { st: 'unk' };
+    return { st: 'open', close: v.close, open: v.open, is24: v.open === 0 && v.close === 1440 };
+  }
+  function pillFor(s, d) {
+    var i = dayInfo(s, d);
+    if (i.st === 'off') return h('span', 'pill off', d === biz().day ? '오늘 휴무' : '휴무');
+    if (i.st === 'unk') return h('span', 'pill unk', '시간 미확인');
+    if (i.is24) return h('span', 'pill', '24시간');
+    var p = h('span', 'pill'); add(p, h('span', 'mono', fmtT(i.close)), document.createTextNode(' 마감')); return p;
+  }
+  function weeklyClosed(s) {
+    if (!s.sched.week) return '';
+    var off = []; s.sched.week.forEach(function (v, i) { if (v === null) off.push(DAY_LABEL[i]); });
+    return off.length && off.length < 7 ? off.join('·') + ' 휴무' : '';
+  }
+
+  // ---------- 데이터 ----------
+  function normalize(id, d) {
+    d = d || {};
+    var hours = String(d.hours || '');
+    return {
+      id: id, raw: d, name: String(d.name || ''), food: String(d.food || ''),
+      features: Array.isArray(d.features) ? d.features.map(String).filter(Boolean) : [],
+      category: String(d.category || ''), price: typeof d.price === 'number' ? d.price : null, verifiedAt: String(d.verifiedAt || ''),
+      distanceM: typeof d.distanceM === 'number' ? d.distanceM : null,
+      lat: typeof d.lat === 'number' ? d.lat : null, lon: typeof d.lon === 'number' ? d.lon : null,
+      zone: String(d.zone || ''), address: String(d.address || ''), mapUrl: String(d.mapUrl || ''), hours: hours, solo: d.solo === true,
+      sched: parseHours(hours),
+      kinds: Array.isArray(d.kinds) ? d.kinds.map(String).filter(Boolean) : [],
+      menus: Array.isArray(d.menus) ? d.menus.filter(function (m) { return m && m.name; }).map(function (m) { return { name: String(m.name), price: typeof m.price === 'number' ? m.price : null, section: m.section ? String(m.section) : '' }; }) : []
+    };
+  }
+  function pub(s) { return s.category !== ''; }
+  function curDay(f) { return f.day === null ? biz().day : f.day; }
+  function passes(s, f, q) {
+    if (f.cats.length ? f.cats.indexOf(s.category) === -1 : !pub(s)) return false;
+    if (f.zone && s.zone !== f.zone) return false;
+    if (f.solo && !s.solo) return false;
+    if (f.kinds.length && !f.kinds.some(function (k) { return s.kinds.indexOf(k) !== -1; })) return false;
+    if (f.close) { var i = dayInfo(s, curDay(f)); if (i.st !== 'open' || i.close < f.close * 60) return false; }
+    if (q && !matchQ(s, q)) return false;
+    return true;
+  }
+  function nz(t) { return String(t).toLowerCase().replace(/\s+/g, ''); }
+  function menuHits(s, q) { var t = nz(q); if (!t) return []; return s.menus.filter(function (m) { return nz(m.name).indexOf(t) !== -1; }); }
+  function matchQ(s, q) {
+    var t = nz(q); if (!t) return true;
+    if (nz(s.name).indexOf(t) !== -1 || nz(s.food).indexOf(t) !== -1) return true;
+    if (s.features.some(function (x) { return nz(x).indexOf(t) !== -1; })) return true;
+    return menuHits(s, q).length > 0;
+  }
+  function hav(a1, o1, a2, o2) { var R = 6371000, r = Math.PI / 180, dA = (a2 - a1) * r, dO = (o2 - o1) * r, x = Math.sin(dA / 2) * Math.sin(dA / 2) + Math.cos(a1 * r) * Math.cos(a2 * r) * Math.sin(dO / 2) * Math.sin(dO / 2); return 2 * R * Math.asin(Math.sqrt(x)); }
+  function effDist(s) { if (state.ref && s.lat !== null && s.lon !== null) return Math.round(hav(state.ref.lat, state.ref.lon, s.lat, s.lon)); return s.distanceM; }
+  function walkMin(m) { return Math.max(1, Math.round(m * 1.3 / 80)); }
+  function distText(s) { var d = effDist(s); return d === null ? '' : (state.ref && s.lat !== null ? '내\u00a0위치' : '서강대') + '\u00a0도보\u00a0' + walkMin(d) + '분'; }
+  // 이전 버전에서 로그인한 적이 있는 기기: 로컬 목록이 어느 계정 것인지 알 수 없으므로 '?'로 표시해 다른 계정에 합쳐지지 않게 한다.
+  (function migrateFavOwner() { try { if (localStorage.getItem('sg-fav-owner') === null) { var legacy = false; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf('sg-fav-m-') === 0 && localStorage.getItem(k)) legacy = true; } localStorage.setItem('sg-fav-owner', legacy ? '?' : ''); } } catch (e) {} })();
+  function loadFav() { try { var a = JSON.parse(store('sg-fav') || '[]'); return Array.isArray(a) ? a.filter(function (x) { return typeof x === 'string'; }) : []; } catch (e) { return []; } }
+  function saveFav() { store('sg-fav', JSON.stringify(state.fav)); pushFav(); }
+  var favTimer = null;
+  function pushFav() {
+    if (!state.user || !state.favSync || !window.SGFB) return;
+    clearTimeout(favTimer); var u = state.user.uid, arr = state.fav.slice();
+    favTimer = setTimeout(function () { window.SGFB.setFavs(u, arr).catch(function () {}); }, 400);
+  }
+  function paintFav(btn, on) { btn.setAttribute('aria-pressed', String(on)); btn.setAttribute('aria-label', on ? '즐겨찾기 해제' : '즐겨찾기에 추가'); btn.firstChild.setAttribute('fill', on ? 'currentColor' : 'none'); }
+  function favBtn(id, top) {
+    var b = h('button', 'favbtn' + (top ? ' top' : '')); b.type = 'button'; b.dataset.fav = id; b.appendChild(svg('star', top ? 22 : 20)); paintFav(b, state.fav.indexOf(id) !== -1);
+    b.addEventListener('click', function (e) {
+      e.stopPropagation(); var i = state.fav.indexOf(id); if (i === -1) state.fav.push(id); else state.fav.splice(i, 1); saveFav(); var on = i === -1;
+      Array.prototype.forEach.call(document.querySelectorAll('[data-fav]'), function (x) { if (x.dataset.fav === id) paintFav(x, on); });
+      if (state.view === 'fav') render();
+    });
+    return b;
+  }
+  function loadRef() { return null; }
+  function byDist(a, b) { var x = effDist(a) === null ? 1e9 : effDist(a), y = effDist(b) === null ? 1e9 : effDist(b); return x !== y ? x - y : a.name.localeCompare(b.name, 'ko'); }
+  function results(f, q, sort) {
+    var d = curDay(f), list = state.shops.filter(function (s) { return passes(s, f, q); });
+    if (sort === 'late') list.sort(function (a, b) { var x = dayInfo(a, d), y = dayInfo(b, d); return (y.st === 'open' ? y.close : -1) - (x.st === 'open' ? x.close : -1) || byDist(a, b); });
+    else list.sort(byDist);
+    return list;
+  }
+  function allFoodSel(f) { return FOODCATS.every(function (k) { return f.cats.indexOf(k) !== -1; }); }
+  function fcount(f) { return (f.close ? 1 : 0) + (f.zone ? 1 : 0) + (f.solo ? 1 : 0) + (allFoodSel(f) ? f.cats.length - FOODCATS.length + 1 : f.cats.length) + f.kinds.length + (f.day !== null ? 1 : 0); }
+
+  // ---------- 화면 전환 ----------
+  function go(view, opts) {
+    opts = opts || {};
+    if (view !== state.view) { if (opts.push) state.stack.push(state.view); else state.stack = []; }
+    state.view = view; if (opts.f) state.f = opts.f; if (opts.q !== undefined) state.q = opts.q;
+    if (opts.sort) state.sort = opts.sort;
+    render(); window.scrollTo(0, 0);
+    if (opts.focus) { var s = document.getElementById('q'); if (s) s.focus(); }
+  }
+  function openDetail(id) {
+    state.openId = id; go('detail', { push: state.view !== 'detail' });
+    try { history.replaceState(null, '', '#' + id); } catch (e) {}
+  }
+  function back() {
+    var prev = state.stack.pop() || 'home';
+    state.openId = null; state.view = prev; render();
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- 하단 탭 ----------
+  function renderTabs() {
+    var tb = els.tabbar; tb.textContent = ''; tb.hidden = state.view === 'detail';
+    var items = [['home', '홈', 'home'], ['near', '내 주변', 'pin'], ['fav', '즐겨찾기', 'star'], ['more', '더보기', 'info']];
+    if (state.dev) { items.push(['triage', '분류', 'filter']); items.push(['dev', '입력', 'edit']); }
+    items.forEach(function (it) {
+      var b = h('button'); b.type = 'button';
+      var on = state.view === it[0] || (it[0] === 'home' && (state.view === 'list' || state.view === 'pick'));
+      if (on) b.setAttribute('aria-current', 'page');
+      add(b, svg(it[2], 24), document.createTextNode(it[1]));
+      b.addEventListener('click', function () { if (it[0] === 'home') { state.f = emptyF(); state.q = ''; } go(it[0]); });
+      tb.appendChild(b);
+    });
+  }
+
+  // ---------- 행 ----------
+  function tileOf(s, lateMode, d) {
+    var i = dayInfo(s, d), t = h('div', 'tile');
+    if (!pub(s)) { t.classList.add('warn'); t.textContent = s.kinds[0] || '대기'; return t; }
+    if (i.st === 'off') { t.classList.add('off'); t.textContent = '쉬는 날'; return t; }
+    if (lateMode && i.st === 'open') { t.classList.add('inv'); t.textContent = i.is24 ? '24h' : fmtT(i.close); return t; }
+    if (s.category === 'bar' || s.category === 'lounge') t.classList.add('bar');
+    t.textContent = s.kinds[0] || catOf(s.category).short; return t;
+  }
+  function rowEl(s, opt) {
+    opt = opt || {}; var d = opt.day === undefined ? biz().day : opt.day, i = dayInfo(s, d);
+    var b = h('div', 'row' + (!pub(s) ? ' pend' : '') + (i.st === 'off' ? ' off' : '')); b.tabIndex = 0; b.setAttribute('role', 'button');
+    add(b, tileOf(s, opt.late, d));
+    var body = h('div', 'body'), nm = h('div', 'nm');
+    add(nm, h('b', '', s.name));
+    if (!pub(s)) nm.appendChild(h('span', 'chip warn', '분류 대기'));
+    else { var c = h('span', 'chip' + (s.category === 'bar' || s.category === 'lounge' ? ' bar' : ''), catOf(s.category).short); nm.appendChild(c); }
+    var meta = [s.zone, distText(s), weeklyClosed(s)].filter(Boolean).join(' · ');
+    var tagTxt = s.features.length ? s.features.slice(0, 2).join(' · ') : '아직 특징이 없어요';
+    if (opt.q && nz(s.name).indexOf(nz(opt.q)) === -1) { var mh = menuHits(s, opt.q); if (mh.length) tagTxt = '메뉴 · ' + mh[0].name + (mh[0].price !== null ? ' ' + mh[0].price.toLocaleString('ko-KR') + '원' : '') + (mh.length > 1 ? ' 외 ' + (mh.length - 1) : ''); }
+    add(body, nm, h('div', 'meta', meta), h('div', 'tags', tagTxt));
+    var side = h('div', 'side'); if (pub(s)) side.appendChild(favBtn(s.id)); side.appendChild(pillFor(s, d)); add(b, body, side);
+    b.addEventListener('click', function () { openDetail(s.id); });
+    b.addEventListener('keydown', function (e) { if (e.target === b && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDetail(s.id); } });
+    return b;
+  }
+
+
+  // ---------- 오늘 뭐 먹지? (랜덤 추천) ----------
+  var EXG = [
+    { sec: '재료', items: [
+      ['돼지고기', ['돼지', '삼겹', '목살', '제육', '돈까스', '돈가스', '돈카츠', '돈까츠', '카츠', '보쌈', '수육', '족발', '껍데기', '항정', '가브리', '갈비', '베이컨', '소시지', '스팸', '탕수육', '동파육', '햄']],
+      ['소고기', ['소고기', '우삼겹', '차돌', '갈비', '스테이크', '불고기', '육회', '육개장', '육전', '곰탕', '설렁탕', '타다끼', '샤브', '스키야키', '떡갈비', '우대', '소불']],
+      ['닭고기', ['닭', '치킨', '탄두리', '순살']],
+      ['해산물', ['새우', '오징어', '연어', '전복', '장어', '조개', '꽃게', '게장', '크랩', '해물', '어묵', '오뎅', '참치', '고등어', '삼치', '낙지', '문어', '굴', '사시미', '명란', '골뱅이', '쭈꾸미', '한치', '소라', '물회', '회냉면', '회비빔', '가오리', '생선']],
+      ['내장·곱창', ['곱창', '대창', '막창', '순대', '내장', '염통', '특양', '오돌뼈', '모래집', '곱도리', '곱전골', '등골']],
+      ['유제품', ['치즈', '우유', '크림', '라떼', '요거트', '요구르트', '아이스크림', '푸딩', '버터', '마요']]
+    ] },
+    { sec: '맛 · 성격', items: [
+      ['매운 음식', ['매운', '매콤', '얼큰', '마라', '불닭', '마파', '고추장', '짬뽕', '낙곱', '청양', '화산']],
+      ['국물 요리', ['탕', '찌개', '전골', '국밥', '해장국', '칼국수', '국수', '우동', '라멘', '라면', '짬뽕', '샤브', '스키야키', '곰탕', '수제비', '순두부', '육개장']],
+      ['차가운 음식', ['냉면', '냉콩', '물회', '막국수', '냉모밀', '빙수', '아이스', '콩국수']],
+      ['튀김 · 기름진 것', ['튀김', '까스', '가스', '카츠', '치킨', '탕수육', '튀김', '전병', '파전', '감자전', '크로플', '도넛']]
+    ] },
+    { sec: '형태', items: [
+      ['면 요리', ['면', '국수', '냉면', '우동', '라멘', '라면', '짬뽕', '파스타', '소면', '쫄면', '막국수', '짜장', '칼국수', '당면', '수제비', '쌀국수']],
+      ['밥 요리', ['덮밥', '비빔밥', '볶음밥', '솥밥', '국밥', '주먹밥', '김밥', '리조또', '카레', '오므라이스', '밥정식', '정식']]
+    ] },
+    { sec: '가게 스타일', shop: true, items: [
+      ['무한리필 집', [/무한\s*리필/]],
+      ['웨이팅 있는 곳', [/웨이팅/]]
+    ] }
+  ];
+  function exFind(label) { var r = null; EXG.forEach(function (g) { g.items.forEach(function (it) { if (it[0] === label) r = { shop: !!g.shop, w: it[1] }; }); }); return r; }
+  function exShop(s) {
+    var txt = [s.name, s.food].concat(s.features, s.menus.map(function (m) { return m.name; })).join(' ');
+    return state.pk.ex.some(function (l) { var e = exFind(l); return e && e.shop && e.w.some(function (r) { return r.test(txt); }); });
+  }
+  var PK_TYPES = KINDS_SUB.filter(function (k) { return k !== '고기'; }).concat(['고기']);
+  function pkDefault() { return { cats: FOODCATS.slice(), genre: [], type: [], ex: [], open: true, solo: false, zone: '', last: null, res: null, msg: '' }; }
+  state.pk = pkDefault();
+  function exHit(name) {
+    var t = nz(name);
+    return state.pk.ex.some(function (l) { var e = exFind(l); return e && !e.shop && e.w.some(function (w) { return t.indexOf(nz(w)) !== -1; }); });
+  }
+  var NOTMAIN = /주류|술|음료|추가|사이드|콜키지|하이볼|전통주|탁주|맥주|소주|막걸리|와인|칵테일|위스키|사케|토핑|옵션|드링크/;
+  var NOTMAINNAME = /^(공기밥|밥 추가|솥밥 추가|사리|추가|콜라|사이다|제로|음료수|토닉|레몬|소주|맥주|병맥주|생맥주|막걸리|청하|테라|켈리|참이슬|진로|대통주|복분자|계란후라이|구운계란)/;
+  function mainMenus(s) {
+    var drink = s.category === 'cafe' || s.category === 'lounge';
+    return s.menus.filter(function (m) {
+      if (!drink && (NOTMAIN.test(m.section || '') || NOTMAINNAME.test(m.name))) return false;
+      return !exHit(m.name);
+    });
+  }
+  function openNow(s) {
+    var b = biz(), i = dayInfo(s, b.day); if (i.st !== 'open') return false;
+    var v = s.sched.week[b.day]; if (b.min < v.open || b.min >= v.close) return false;
+    if (v.bt && b.min >= v.bt[0] && b.min < v.bt[1]) return false;
+    return true;
+  }
+  function pkPool() {
+    var k = state.pk, f = emptyF(); f.cats = k.cats.slice(); f.solo = k.solo; f.zone = k.zone;
+    return state.shops.filter(function (s) {
+      if (!passes(s, f, '')) return false;
+      if (k.genre.length && !k.genre.some(function (g) { return s.kinds.indexOf(g) !== -1; })) return false;
+      if (k.type.length && !k.type.some(function (g) { return s.kinds.indexOf(g) !== -1; })) return false;
+      if (k.open && !openNow(s)) return false;
+      if (k.ex.length && exShop(s)) return false;
+      if (k.ex.length && !mainMenus(s).length) return false;
+      return true;
+    });
+  }
+  function pkPick() {
+    var k = state.pk, pool = pkPool();
+    if (!pool.length) { k.res = null; k.msg = '조건에 맞는 곳이 없어요. 조건을 조금 풀어 보세요.'; return; }
+    var cand = pool.length > 1 ? pool.filter(function (s) { return s.id !== k.last; }) : pool;
+    var s = cand[Math.floor(Math.random() * cand.length)], ms = mainMenus(s), m = ms.length ? ms[Math.floor(Math.random() * ms.length)] : null;
+    k.last = s.id; k.res = { id: s.id, menu: m }; k.msg = '';
+  }
+  function renderPick(v) {
+    var k = state.pk;
+    var bar = h('div', 'topbar'), bk = h('button', 'ibtn'); bk.type = 'button'; bk.setAttribute('aria-label', '뒤로'); bk.appendChild(svg('back', 22)); bk.addEventListener('click', back);
+    add(bar, bk, h('b', '', '오늘 뭐 먹지?')); v.appendChild(bar);
+    var w = h('div', 'pk');
+    function redraw() { var y = window.scrollY; render(); window.scrollTo(0, y); }
+    function showRes() { var r = document.querySelector('.pkres, .pkmsg'); if (r) r.scrollIntoView({ block: 'center' }); }
+    function chipRow(title, hint, items, isOn, onTap, cls) {
+      w.appendChild(h('div', 'sec-title', title)); if (hint) w.appendChild(h('div', 'hint', hint));
+      var c = h('div', 'chips');
+      items.forEach(function (it) { var b = h('button', 'pbtn' + (cls ? ' ' + cls : ''), it.l); b.type = 'button'; b.setAttribute('aria-pressed', String(isOn(it))); b.addEventListener('click', function () { onTap(it); k.res = null; k.msg = ''; redraw(); }); c.appendChild(b); });
+      w.appendChild(c);
+    }
+    var allFood = FOODCATS.every(function (x) { return k.cats.indexOf(x) !== -1; });
+    chipRow('어디서', '', [{ l: '식당', v: 'food' }, { l: '카페', v: 'cafe' }, { l: '술집', v: 'bar' }, { l: '바', v: 'lounge' }],
+      function (it) { return it.v === 'food' ? allFood : k.cats.indexOf(it.v) !== -1; },
+      function (it) { if (it.v === 'food') { if (allFood) k.cats = k.cats.filter(function (x) { return FOODCATS.indexOf(x) === -1; }); else FOODCATS.forEach(function (x) { if (k.cats.indexOf(x) === -1) k.cats.push(x); }); } else toggleIn(k.cats, it.v); });
+    chipRow('음식 장르', '고르지 않으면 전부', KINDS_MAIN.map(function (g) { return { l: g }; }), function (it) { return k.genre.indexOf(it.l) !== -1; }, function (it) { toggleIn(k.genre, it.l); });
+    chipRow('음식 종류', '고르지 않으면 전부', PK_TYPES.map(function (g) { return { l: g }; }), function (it) { return k.type.indexOf(it.l) !== -1; }, function (it) { toggleIn(k.type, it.l); });
+    w.appendChild(h('div', 'sec-title', '이건 오늘 패스')); w.appendChild(h('div', 'hint', '누르면 그 재료·메뉴가 든 곳은 추천에서 빠져요'));
+    EXG.forEach(function (g) {
+      w.appendChild(h('div', 'kwg', g.sec)); var c = h('div', 'chips');
+      g.items.forEach(function (it) { var b = h('button', 'pbtn ex', it[0]); b.type = 'button'; b.setAttribute('aria-pressed', String(k.ex.indexOf(it[0]) !== -1)); b.addEventListener('click', function () { toggleIn(k.ex, it[0]); k.res = null; k.msg = ''; redraw(); }); c.appendChild(b); });
+      w.appendChild(c);
+    });
+    w.appendChild(h('div', 'sec-title', '조건'));
+    var tg = h('div', 'tg');
+    [['지금 영업 중', 'open'], ['혼밥 가능', 'solo']].forEach(function (o) { var b = h('button', 'pbtn', o[0]); b.type = 'button'; b.setAttribute('aria-pressed', String(k[o[1]])); b.addEventListener('click', function () { k[o[1]] = !k[o[1]]; k.res = null; k.msg = ''; redraw(); }); tg.appendChild(b); });
+    ['정문', '남문', '후문'].forEach(function (z) { var b = h('button', 'pbtn', z); b.type = 'button'; b.setAttribute('aria-pressed', String(k.zone === z)); b.addEventListener('click', function () { k.zone = k.zone === z ? '' : z; k.res = null; k.msg = ''; redraw(); }); tg.appendChild(b); });
+    w.appendChild(tg);
+    var n = state.loaded ? pkPool().length : 0, cta = h('button', 'cta pkcta', state.loaded ? (k.res ? '다시 뽑기' : '뽑기!') + ' · 후보 ' + n + '곳' : '불러오는 중'); cta.type = 'button';
+    cta.addEventListener('click', function () { pkPick(); redraw(); showRes(); }); w.appendChild(cta);
+    if (k.msg) w.appendChild(h('div', 'pkmsg', k.msg));
+    if (k.res) {
+      var s = state.shops.filter(function (x) { return x.id === k.res.id; })[0];
+      if (s) {
+        var c = h('div', 'pkres'); add(c, h('div', 'lbl', '오늘의 선택'), h('div', 'nm', s.name));
+        if (k.res.menu) c.appendChild(h('div', 'menu', k.res.menu.name + (k.res.menu.price !== null ? ' · ' + k.res.menu.price.toLocaleString('ko-KR') + '원' : '')));
+        c.appendChild(h('div', 'meta', [catOf(s.category).short, s.zone, distText(s)].filter(Boolean).join(' · ')));
+        if (s.features.length) c.appendChild(h('div', 'meta', s.features.slice(0, 3).join(' · ')));
+        var ac = h('div', 'acts'), a1 = h('button', 'pbtn', '이 가게 보기'); a1.type = 'button'; a1.addEventListener('click', function () { openDetail(s.id); });
+        var a2 = h('button', 'pbtn', '다시 뽑기'); a2.type = 'button'; a2.addEventListener('click', function () { pkPick(); redraw(); showRes(); });
+        add(ac, a1, a2); c.appendChild(ac); w.appendChild(c);
+      }
+    }
+    w.appendChild(h('p', 'pknote', '취향용 필터입니다. 메뉴 이름에 든 단어로만 거르기 때문에 알레르기나 식이 제한에는 쓰지 마세요. 메뉴 정보가 없는 가게는 "패스" 조건을 걸면 후보에서 빠집니다. 무한리필·웨이팅은 가게 정보에 적힌 경우만 걸러집니다.'));
+    v.appendChild(w);
+  }
+
+  // ---------- 홈 ----------
+  var SITU = [
+    { l: '가성비', i: 'won', f: { cats: ['value'] } }, { l: '적당한 맛집', i: 'bowl', f: { cats: ['decent'] } },
+    { l: '자주 갈 맛집', i: 'heart', f: { cats: ['regular'] } }, { l: '카페', i: 'cup', f: { cats: ['cafe'] } },
+    { l: '술집', i: 'glass', f: { cats: ['bar'] } }, { l: '바', i: 'cocktail', f: { cats: ['lounge'] } },
+    { l: '혼밥', i: 'solo', f: { solo: true } }, { l: '새벽까지', i: 'moon', f: { close: 27 }, sort: 'late' },
+    { l: '정문', i: 'gate', f: { zone: '정문' }, w4: true }, { l: '남문', i: 'south', f: { zone: '남문' }, w4: true }, { l: '후문', i: 'door', f: { zone: '후문' }, w4: true }
+  ];
+  var KW = [
+    { g: '밥 · 안주', t: [['돈까스'], ['우동'], ['김치'], ['삼겹', '삼겹살'], ['짬뽕'], ['마라'], ['떡볶이'], ['피자'], ['부대찌개'], ['칼국수'], ['냉면'], ['치킨'], ['순두부']] },
+    { g: '카페 · 디저트', t: [['라떼'], ['말차'], ['에이드'], ['밀크티'], ['빙수'], ['케이크'], ['에그타르트'], ['바스크'], ['샌드위치'], ['쿠키']] },
+    { g: '술', t: [['하이볼'], ['맥주'], ['막걸리'], ['소주'], ['와인'], ['위스키']] }
+  ];
+  function mkF(p) { var f = emptyF(); Object.keys(p || {}).forEach(function (k) { f[k] = p[k]; }); return f; }
+  function renderHome(v) {
+    var n = state.shops.filter(pub).length;
+    var head = h('div', 'home-head'); add(head, h('div', 'brand', '서강 한 바퀴'), h('div', 'brand-sub', state.loaded ? '서강대 주변 · 직접 확인한 ' + n + '곳' : '서강대 주변 · 직접 확인한 목록'));
+    var fi = h('button', 'fakeinput'); fi.type = 'button'; add(fi, svg('search', 20), document.createTextNode('가게 이름, 메뉴로 찾기'));
+    fi.addEventListener('click', function () { go('list', { f: emptyF(), q: '', focus: true }); });
+    var late = state.shops.filter(function (s) { return passes(s, mkF({ close: 27 }), ''); }).length;
+    var bn = h('button', 'banner'); bn.type = 'button';
+    var bl = h('div'); add(bl, h('b', '', '마감이 늦은 곳만 보기'), h('span', 's', '새벽 3시 이후까지 여는 곳'));
+    var cnt = h('span', 'cnt'); if (state.loaded) { cnt.appendChild(document.createTextNode(String(late))); cnt.appendChild(h('small', '', '곳')); }
+    add(bn, bl, cnt);
+    bn.addEventListener('click', function () { go('list', { f: mkF({ close: 27 }), q: '', sort: 'late' }); });
+    var pb = h('button', 'banner pick'); pb.type = 'button';
+    var pl = h('div'); add(pl, h('b', '', '오늘 뭐 먹지?'), h('span', 's', '못 먹는 것만 빼고 랜덤으로 골라 드려요'));
+    add(pb, pl, svg('dice', 30)); pb.addEventListener('click', function () { state.pk.res = null; state.pk.msg = ''; go('pick', { push: true }); });
+    add(v, head, fi, bn, pb);
+    if (!state.loaded || !state.dbOk) { add(v, stateMsg()); return; }
+    var sb = h('div', 'block'); add(sb, h('div', 'sec-title', '상황별로 찾기'));
+    var g = h('div', 'situ');
+    SITU.forEach(function (s) {
+      var c = state.shops.filter(function (x) { return passes(x, mkF(s.f), ''); }).length;
+      var b = h('button', s.w4 ? 'w4' : ''); b.type = 'button'; add(b, svg(s.i, 24), h('span', '', s.l), h('small', '', c + '곳'));
+      b.addEventListener('click', function () { go('list', { f: mkF(s.f), q: '', sort: s.sort || 'near' }); });
+      g.appendChild(b);
+    });
+    add(sb, g); v.appendChild(sb);
+    var kb = h('div', 'block'), kr = h('div', 'sec-row'), all = results(emptyF(), '', 'near');
+    var more = h('button', '', '전체 ' + all.length + '곳 보기'); more.type = 'button'; more.addEventListener('click', function () { go('list', { f: emptyF(), q: '', sort: 'near' }); });
+    add(kr, h('div', 'sec-title', '메뉴로 찾기'), more); kb.appendChild(kr);
+    KW.forEach(function (grp) {
+      var items = grp.t.map(function (k) { return { t: k[0], l: k[1] || k[0], c: state.shops.filter(function (x) { return passes(x, emptyF(), k[0]); }).length }; }).filter(function (x) { return x.c >= 2; }).sort(function (x, y) { return y.c - x.c; });
+      if (!items.length) return;
+      kb.appendChild(h('div', 'kwg', grp.g));
+      var cs = h('div', 'chips');
+      items.forEach(function (x) { var b = h('button', 'pbtn kw'); b.type = 'button'; add(b, document.createTextNode(x.l + ' '), h('small', '', String(x.c))); b.addEventListener('click', function () { go('list', { f: emptyF(), q: x.t, sort: 'near' }); }); cs.appendChild(b); });
+      kb.appendChild(cs);
+    });
+    v.appendChild(kb);
+    v.appendChild(h('p', 'notice', '메뉴는 개발자가 실제 메뉴판을 보고 하나씩 채운 것이라, 메뉴 정보가 없는 가게는 메뉴 검색에 나오지 않을 수 있습니다.'));
+    v.appendChild(h('p', 'dfoot', '가격은 가게마다 표시된 확인일 기준이며 바뀔 수 있습니다. 도보 시간은 직선거리에 1.3배를 곱해 분당 80m로 추정한 값이며 실제 경로가 아닙니다. 영업시간은 새벽 6시 전에는 전날 영업일 기준으로 보여 줍니다. 사진은 네이버 지도 링크로 연결합니다.' + (window.__BUILT__ ? ' 데이터 기준 ' + window.__BUILT__ + '.' : '')));
+  }
+  function stateMsg() {
+    var e = h('div', 'empty');
+    if (!state.loaded) { e.appendChild(h('div', 't', '목록을 불러오는 중이에요')); return e; }
+    add(e, h('div', 't', '목록을 불러오지 못했어요'), h('div', 's', '잠시 뒤 새로고침해 주세요.')); return e;
+  }
+
+  // ---------- 목록 ----------
+  function filterSummary(f) {
+    var p = [];
+    if (f.close) p.push(CLOSE_OPTS.filter(function (o) { return o[0] === f.close; })[0][1]);
+    if (f.day !== null) p.push(DAY_LABEL[f.day] + '요일');
+    if (allFoodSel(f)) p.push('식당'); f.cats.forEach(function (c) { if (!(allFoodSel(f) && FOODCATS.indexOf(c) !== -1)) p.push(catOf(c).short); });
+    if (f.zone) p.push(f.zone);
+    f.kinds.forEach(function (k) { p.push(k); });
+    if (f.solo) p.push('혼밥');
+    return p;
+  }
+  function renderList(v) {
+    var bar = h('div', 'topbar');
+    var bk = h('button', 'ibtn'); bk.type = 'button'; bk.setAttribute('aria-label', '홈으로'); bk.appendChild(svg('back', 22));
+    bk.addEventListener('click', function () { state.f = emptyF(); state.q = ''; go('home'); });
+    var q = h('input', 'search'); q.type = 'search'; q.id = 'q'; q.placeholder = '가게 이름, 메뉴'; q.value = state.q; q.autocomplete = 'off'; q.setAttribute('aria-label', '가게 이름이나 메뉴로 찾기');
+    q.addEventListener('input', function () { state.q = q.value; renderListBody(); });
+    var n = fcount(state.f), fb = h('button', 'fbtn' + (n ? ' on' : '')); fb.type = 'button'; add(fb, svg('filter', 18), document.createTextNode('필터' + (n ? ' ' + n : '')));
+    fb.addEventListener('click', openFilter);
+    add(bar, bk, q, fb); v.appendChild(bar);
+    var body = h('div'); body.id = 'list-body'; v.appendChild(body);
+  }
+  function renderListBody() {
+    var body = document.getElementById('list-body'); if (!body) return; body.textContent = '';
+    if (!state.loaded || !state.dbOk) { body.appendChild(stateMsg()); return; }
+    var f = state.f, list = results(f, state.q.trim(), state.sort), sum = filterSummary(f);
+    var line = h('div', 'sumline'); add(line, h('div', 'l', sum.length ? list.length + '곳 · ' + sum.join(' · ') : (state.q.trim() ? '"' + state.q.trim() + '" ' + list.length + '곳' : '전체 ' + list.length + '곳')));
+    var sg = h('div', 'seg'); [['near', '가까운 순'], ['late', '늦게까지']].forEach(function (o) {
+      var b = h('button', '', o[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(state.sort === o[0]));
+      b.addEventListener('click', function () { state.sort = o[0]; renderListBody(); }); sg.appendChild(b);
+    });
+    add(line, sg); body.appendChild(line);
+    if (state.ref) { var rb = h('div', 'activef'), bt = h('button', '', '내 위치 기준 · 해제'); bt.type = 'button'; bt.addEventListener('click', function () { state.ref = null; renderListBody(); }); rb.appendChild(bt); body.appendChild(rb); }
+    if (!list.length) {
+      var e = h('div', 'empty'), acts = h('div', 'acts');
+      add(e, h('div', 't', '조건에 맞는 곳이 아직 없어요'), h('div', 's', sum.concat(state.q.trim() ? ['"' + state.q.trim() + '"'] : []).join(' · ') || '직접 확인한 가게부터 채워 갑니다.'));
+      if (f.close) { var b1 = h('button', 'pbtn primary', '시간 조건 빼기'); b1.type = 'button'; b1.addEventListener('click', function () { f.close = 0; renderList2(); }); acts.appendChild(b1); }
+      if (fcount(f) || state.q) { var b2 = h('button', 'pbtn', '필터 초기화'); b2.type = 'button'; b2.addEventListener('click', function () { state.f = emptyF(); state.q = ''; renderList2(); }); acts.appendChild(b2); }
+      if (acts.childNodes.length) e.appendChild(acts); body.appendChild(e); return;
+    }
+    var rows = h('div', 'rows'), d = curDay(f);
+    list.forEach(function (s) { rows.appendChild(rowEl(s, { late: f.close > 0 || state.sort === 'late', day: d, q: state.q.trim() })); });
+    body.appendChild(rows);
+  }
+  function renderList2() { render(); }
+
+  // ---------- 필터 시트 ----------
+  function openFilter() {
+    state.draft = JSON.parse(JSON.stringify(state.f)); drawSheet();
+    els.scrim.hidden = false; document.body.classList.add('lock'); els.sheet.focus();
+  }
+  function closeSheet() { if (els.scrim.hidden) return; els.scrim.hidden = true; document.body.classList.remove('lock'); state.draft = null; }
+  function toggleIn(arr, v) { var i = arr.indexOf(v); if (i === -1) arr.push(v); else arr.splice(i, 1); }
+  function drawSheet() {
+    var f = state.draft, sh = els.sheet; sh.textContent = '';
+    var grab = h('div', 'grab'); grab.appendChild(h('i')); sh.appendChild(grab);
+    var hd = h('div', 'hd'), rs = h('button', '', '초기화'); rs.type = 'button';
+    rs.addEventListener('click', function () { state.draft = emptyF(); drawSheet(); });
+    var cl = h('button', '', '닫기'); cl.type = 'button'; cl.addEventListener('click', closeSheet);
+    add(hd, h('b', '', '필터'), rs); sh.appendChild(hd);
+    var scr = h('div', 'scr');
+    function group(title, hint) { var g = h('div', 'block'); g.style.paddingTop = '18px'; g.appendChild(h('div', 'sec-title', title)); if (hint) g.appendChild(h('div', 'hint', hint)); scr.appendChild(g); return g; }
+    var g1 = group('몇 시까지 하는 곳'), gr = h('div', 'grid3');
+    CLOSE_OPTS.forEach(function (o) { var b = h('button', 'pbtn', o[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(f.close === o[0])); b.addEventListener('click', function () { f.close = o[0]; drawSheet(); }); gr.appendChild(b); });
+    g1.appendChild(gr);
+    var gd = group('요일', '기본은 오늘입니다. 시간 조건과 휴무는 고른 요일 기준입니다.');
+    var ob = h('button', 'pbtn', '오늘'); ob.type = 'button'; ob.setAttribute('aria-pressed', String(f.day === null)); ob.addEventListener('click', function () { f.day = null; drawSheet(); });
+    var g7 = h('div', 'chips'); g7.appendChild(ob);
+    DAY_LABEL.forEach(function (dl, i) { var b = h('button', 'pbtn', dl); b.type = 'button'; b.setAttribute('aria-pressed', String(f.day === i)); b.addEventListener('click', function () { f.day = i; drawSheet(); }); g7.appendChild(b); });
+    gd.appendChild(g7);
+    var g2 = group('구역'), c2 = h('div', 'chips');
+    [''].concat(ZONES).forEach(function (z) { var b = h('button', 'pbtn', z || '전체'); b.type = 'button'; b.setAttribute('aria-pressed', String(f.zone === z)); b.addEventListener('click', function () { f.zone = z; drawSheet(); }); c2.appendChild(b); });
+    g2.appendChild(c2);
+    var g3 = group('종류'), c3 = h('div', 'chips');
+    var allFood = FOODCATS.every(function (k) { return f.cats.indexOf(k) !== -1; });
+    var fb0 = h('button', 'pbtn', '식당 전체'); fb0.type = 'button'; fb0.setAttribute('aria-pressed', String(allFood));
+    fb0.addEventListener('click', function () { if (allFood) f.cats = f.cats.filter(function (k) { return FOODCATS.indexOf(k) === -1; }); else FOODCATS.forEach(function (k) { if (f.cats.indexOf(k) === -1) f.cats.push(k); }); drawSheet(); });
+    c3.appendChild(fb0);
+    (state.dev ? CATS.concat([PENDING]) : CATS).forEach(function (c) { var b = h('button', 'pbtn', c.short); b.type = 'button'; b.setAttribute('aria-pressed', String(f.cats.indexOf(c.key) !== -1)); b.addEventListener('click', function () { toggleIn(f.cats, c.key); drawSheet(); }); c3.appendChild(b); });
+    g3.appendChild(c3);
+    var g4 = group('음식'), c4 = h('div', 'chips');
+    KINDS.forEach(function (k) { var b = h('button', 'pbtn', k); b.type = 'button'; b.setAttribute('aria-pressed', String(f.kinds.indexOf(k) !== -1)); b.addEventListener('click', function () { toggleIn(f.kinds, k); drawSheet(); }); c4.appendChild(b); });
+    g4.appendChild(c4);
+    var tg = h('div', 'toggle'), sw = h('button', 'sw'); sw.type = 'button'; sw.setAttribute('role', 'switch'); sw.setAttribute('aria-checked', String(f.solo)); sw.setAttribute('aria-label', '혼밥 가능한 곳만'); sw.appendChild(h('i'));
+    sw.addEventListener('click', function () { f.solo = !f.solo; drawSheet(); });
+    add(tg, h('div', 'sec-title', '혼밥 가능한 곳만'), sw); scr.appendChild(tg);
+    sh.appendChild(scr);
+    var cnt = results(f, state.q.trim(), state.sort).length, ft = h('div', 'ft'), cta = h('button', 'cta', '결과 ' + cnt + '곳 보기'); cta.type = 'button';
+    cta.addEventListener('click', function () { state.f = state.draft; closeSheet(); render(); });
+    ft.appendChild(cta); sh.appendChild(ft);
+  }
+
+  var LAT0 = 37.5526, LON0 = 126.9405;
+  // ---------- 내 주변 ----------
+  var NEAR = { open: true, cat: 'food', walk: 0, msg: '' };
+  // 지금 영업 중인지: true / false / null(시간 미확인). 새벽 영업은 전날 영업일 기준으로도 확인한다.
+  function isOpenNow(s) {
+    if (!s.sched.week) return null;
+    var d = new Date(), rd = (d.getDay() + 6) % 7, rm = d.getHours() * 60 + d.getMinutes(), t = dayInfo(s, rd), y = dayInfo(s, (rd + 6) % 7);
+    if (t.st === 'open' && rm >= t.open && rm < Math.min(t.close, 1440)) { var v = s.sched.week[rd]; if (!(v.bt && rm >= v.bt[0] && rm < v.bt[1])) return true; }
+    if (y.st === 'open' && y.close > 1440 && rm + 1440 < y.close) return true;
+    return (t.st !== 'unk' && y.st !== 'unk') ? false : null;
+  }
+  function locate() {
+    NEAR.msg = '';
+    function fail(t) { NEAR.msg = t; var b = $('nearloc'); if (b) { b.disabled = false; b.textContent = state.ref ? '다시 측정' : '현재 위치로 찾기'; } var m = $('nearmsg'); if (m) { m.textContent = t; m.hidden = !t; } }
+    var b = $('nearloc');
+    if (!navigator.geolocation) { fail('이 환경에서는 위치 정보를 쓸 수 없어요. 서강대 기준으로 보여 드려요.'); return; }
+    if (b) { b.disabled = true; b.textContent = '측정 중…'; }
+    try {
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        var la = pos.coords.latitude, lo = pos.coords.longitude, far = hav(LAT0, LON0, la, lo);
+        state.ref = { lat: la, lon: lo, acc: pos.coords.accuracy, src: 'gps' };
+        NEAR.msg = far > 3000 ? '서강대에서 약 ' + (far / 1000).toFixed(1) + 'km 떨어진 곳이에요. 도보 시간이 길게 나옵니다.' : '';
+        render();
+      }, function (err) { fail(err && err.code === 1 ? '위치 권한이 거부됐어요. 서강대 기준으로 보여 드려요.' : '위치를 받지 못했어요. 서강대 기준으로 보여 드려요.'); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+    } catch (e) { fail('이 환경에서는 위치 정보를 쓸 수 없어요. 서강대 기준으로 보여 드려요.'); }
+  }
+  function renderNear(v) {
+    var hd = h('div', 'home-head'); add(hd, h('div', 'brand', '내 주변'), h('div', 'brand-sub', state.ref ? '내 위치 기준 · 가까운 순' : '서강대 기준 · 가까운 순')); v.appendChild(hd);
+    var loc = h('div', 'locbar'), b = h('button', 'pbtn primary', state.ref ? '다시 측정' : '현재 위치로 찾기'); b.id = 'nearloc'; b.type = 'button'; b.addEventListener('click', locate); loc.appendChild(b);
+    if (state.ref) { var c = h('button', 'pbtn', '내 위치 해제'); c.type = 'button'; c.addEventListener('click', function () { state.ref = null; NEAR.msg = ''; render(); }); loc.appendChild(c); }
+    v.appendChild(loc);
+    var m = h('div', 'nearmsg', NEAR.msg); m.id = 'nearmsg'; m.hidden = !NEAR.msg; v.appendChild(m);
+    if (!state.ref && !NEAR.msg) v.appendChild(h('div', 'nearhint', '현재 위치를 허용하면 지금 있는 곳 기준으로 보여 드려요. 허용하지 않아도 서강대 기준으로 볼 수 있어요.'));
+    var row = h('div', 'mapchips');
+    var on = h('button', 'pbtn', '지금 영업 중'); on.type = 'button'; on.setAttribute('aria-pressed', String(NEAR.open)); on.addEventListener('click', function () { NEAR.open = !NEAR.open; render(); }); row.appendChild(on);
+    [['food', '밥집'], ['cafe', '카페'], ['drink', '술집 · 바']].forEach(function (o) { var x = h('button', 'pbtn', o[1]); x.type = 'button'; x.setAttribute('aria-pressed', String(NEAR.cat === o[0])); x.addEventListener('click', function () { NEAR.cat = o[0]; render(); }); row.appendChild(x); });
+    v.appendChild(row);
+    var row2 = h('div', 'mapchips');
+    [[0, '거리 무관'], [5, '도보 5분 이내'], [10, '도보 10분 이내'], [15, '도보 15분 이내']].forEach(function (o) { var x = h('button', 'pbtn', o[1]); x.type = 'button'; x.setAttribute('aria-pressed', String(NEAR.walk === o[0])); x.addEventListener('click', function () { NEAR.walk = o[0]; render(); }); row2.appendChild(x); });
+    v.appendChild(row2);
+    var body = h('div'); body.id = 'near-body'; v.appendChild(body);
+  }
+  function renderNearBody() {
+    var body = $('near-body'); if (!body) return; body.textContent = '';
+    if (!state.loaded || !state.dbOk) { body.appendChild(stateMsg()); return; }
+    var unknown = 0;
+    var list = state.shops.filter(function (s) {
+      if (!pub(s)) return false;
+      if (NEAR.cat === 'food' && FOODCATS.indexOf(s.category) === -1) return false;
+      if (NEAR.cat === 'drink' && s.category !== 'bar' && s.category !== 'lounge') return false;
+      if (NEAR.cat === 'cafe' && s.category !== 'cafe') return false;
+      var d = effDist(s); if (NEAR.walk && (d === null || walkMin(d) > NEAR.walk)) return false;
+      if (NEAR.open) { var o = isOpenNow(s); if (o === null) { unknown++; return false; } if (!o) return false; }
+      return true;
+    }).sort(byDist);
+    var line = h('div', 'sumline'); add(line, h('div', 'l', (NEAR.open ? '지금 영업 중 ' : '') + list.length + '곳')); body.appendChild(line);
+    if (NEAR.open && unknown) body.appendChild(h('div', 'nearhint', '영업시간을 모르는 ' + unknown + '곳은 빠져 있어요.'));
+    if (!list.length) {
+      var e = h('div', 'empty'), acts = h('div', 'acts');
+      add(e, h('div', 't', '조건에 맞는 곳이 없어요'), h('div', 's', NEAR.open ? '지금 영업 중인 곳이 없거나 거리 조건이 좁아요.' : '거리 조건을 넓혀 보세요.'));
+      if (NEAR.open) { var b1 = h('button', 'pbtn primary', '영업 조건 빼기'); b1.type = 'button'; b1.addEventListener('click', function () { NEAR.open = false; render(); }); acts.appendChild(b1); }
+      if (NEAR.walk) { var b2 = h('button', 'pbtn', '거리 조건 빼기'); b2.type = 'button'; b2.addEventListener('click', function () { NEAR.walk = 0; render(); }); acts.appendChild(b2); }
+      if (acts.childNodes.length) e.appendChild(acts); body.appendChild(e); return;
+    }
+    var rows = h('div', 'rows'); list.forEach(function (s) { rows.appendChild(rowEl(s)); }); body.appendChild(rows);
+    body.appendChild(h('p', 'dfoot', '도보 시간은 직선거리에 1.3배를 곱해 분당 80m로 추정한 값이며 실제 경로가 아닙니다.'));
+  }
+
+  // ---------- 더보기 (소개·의견) ----------
+  var FEEDBACK = /*FEEDBACK_CFG*/{ url: '', shopTpl: '' }/*END*/;
+  function okFormUrl(u) { return /^https:\/\/(docs\.google\.com\/forms\/|forms\.gle\/|form\.naver\.com\/|naver\.me\/)/.test(u || ''); }
+  function shopFormUrl(s) { return okFormUrl(FEEDBACK.shopTpl) ? FEEDBACK.shopTpl.replace('__SHOP__', encodeURIComponent(s.name)) : null; }
+  // ---------- 계정 · 설치 ----------
+  var deferredInstall = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferredInstall = e; if (state.view === 'more') render(); });
+  function isStandalone() { try { return !!(navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)); } catch (e) { return false; } }
+  function authErrText(e) {
+    var c = e && e.code;
+    if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return '';
+    if (c === 'auth/network-request-failed') return '네트워크에 연결되지 않았어요. 연결을 확인하고 다시 시도해 주세요.';
+    if (c === 'auth/unauthorized-domain') return '이 주소는 로그인이 허용되지 않았어요. 관리자에게 알려 주세요.';
+    if (c === 'auth/popup-blocked') return '팝업이 막혔어요. 팝업을 허용하고 다시 시도해 주세요.';
+    if (c === 'auth/operation-not-allowed') return '로그인 방식이 아직 켜져 있지 않아요. 관리자에게 알려 주세요.';
+    return '로그인하지 못했어요. 잠시 뒤 다시 시도해 주세요.';
+  }
+  function repaint() { var y = window.scrollY; render(); window.scrollTo(0, y); }
+  function doLogin() {
+    if (!window.SGFB || state.accBusy) return;
+    state.accErr = ''; state.accBusy = true; repaint();
+    var r; try { r = window.SGFB.login(); } catch (e) { r = Promise.reject(e); }
+    Promise.resolve(r).then(null, function (e) { state.accErr = authErrText(e); }).then(function () { state.accBusy = false; repaint(); });
+  }
+  function doLogout() { if (!window.SGFB) return; window.SGFB.logout().then(function () { state.delArmed = false; state.accErr = ''; repaint(); }); }
+  function doDelete() {
+    if (!window.SGFB || state.accBusy) return;
+    if (!state.delArmed) { state.delArmed = true; repaint(); setTimeout(function () { if (state.delArmed) { state.delArmed = false; if (state.view === 'more') repaint(); } }, 5000); return; }
+    state.accBusy = true; state.accErr = ''; repaint();
+    window.SGFB.deleteAccount().then(function () { store('sg-fav-m-' + (state.user ? state.user.uid : ''), ''); state.delArmed = false; state.accErr = '계정과 서버에 저장된 즐겨찾기를 삭제했어요.'; }, function (e) {
+      state.delArmed = false; state.accErr = (e && e.code === 'auth/requires-recent-login') ? '보안을 위해 다시 로그인한 뒤 한 번 더 눌러 주세요.' : '삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요.';
+    }).then(function () { state.accBusy = false; repaint(); });
+  }
+  function loginBtn(cls) {
+    var b = h('button', cls === 'ghost' ? 'ghost' : 'cta', state.accBusy ? '로그인 중…' : 'Google로 로그인'); b.type = 'button'; b.disabled = state.accBusy || !window.SGFB;
+    b.addEventListener('click', doLogin); return b;
+  }
+  function accountBox() {
+    var box = h('div', 'about'); box.appendChild(h('h2', '', '계정'));
+    if (state.user) {
+      box.appendChild(h('p', '', (state.user.name || state.user.email) + ' 님으로 로그인되어 있어요. 즐겨찾기가 계정에 저장됩니다.'));
+      var row = h('div', 'acts2');
+      var lo = h('button', 'ghost', '로그아웃'); lo.type = 'button'; lo.addEventListener('click', doLogout); row.appendChild(lo);
+      var dl = h('button', 'ghost danger' + (state.delArmed ? ' armed' : ''), state.delArmed ? '한 번 더 눌러 계정 삭제' : '계정 삭제'); dl.type = 'button'; dl.disabled = state.accBusy; dl.addEventListener('click', doDelete); row.appendChild(dl);
+      box.appendChild(row);
+      box.appendChild(h('p', 'hint', '계정을 삭제하면 서버에 저장된 즐겨찾기도 함께 지워집니다. 이 기기에 남은 즐겨찾기는 그대로입니다.'));
+    } else {
+      box.appendChild(h('p', '', '로그인하지 않아도 모든 가게 정보를 볼 수 있어요. 로그인하면 즐겨찾기가 계정에 저장돼 기기를 바꾸거나 브라우저 데이터를 지워도 남습니다.'));
+      box.appendChild(loginBtn());
+    }
+    if (state.accErr) box.appendChild(h('p', 'hint err', state.accErr));
+    var pv = h('a', 'hint', '개인정보 처리방침'); pv.href = '/privacy.html'; pv.style.textDecoration = 'underline'; box.appendChild(pv);
+    return box;
+  }
+  function installBox() {
+    if (isStandalone()) return null;
+    var box = h('div', 'about'); box.appendChild(h('h2', '', '홈 화면에 추가'));
+    box.appendChild(h('p', '', '매번 주소를 찾아 들어오기 번거롭다면 홈 화면에 추가해 앱처럼 쓰세요.'));
+    if (deferredInstall) {
+      var ib = h('button', 'cta', '홈 화면에 추가하기'); ib.type = 'button';
+      ib.addEventListener('click', function () { var d = deferredInstall; deferredInstall = null; d.prompt(); repaint(); }); box.appendChild(ib);
+    }
+    var ul = h('ul');
+    ['iPhone(Safari): 하단의 공유 버튼을 누르고, 아래로 스크롤해 "홈 화면에 추가"를 누르세요.', 'Android(Chrome): 오른쪽 위 점 세 개 버튼을 누르고 "홈 화면에 추가" 또는 "앱 설치"를 누르세요.'].forEach(function (t) { ul.appendChild(h('li', '', t)); });
+    box.appendChild(ul);
+    box.appendChild(h('p', 'hint', '로그인은 홈 화면에 추가한 앱을 연 다음에 하는 걸 권해요. 브라우저와 홈 화면 앱은 저장 공간이 따로일 수 있어요.'));
+    return box;
+  }
+  function renderGate(v) {
+    var hd = h('div', 'home-head'); add(hd, h('div', 'brand', '서강 한 바퀴 관리'), h('div', 'brand-sub', '관리자 전용')); v.appendChild(hd);
+    var a = h('div', 'about');
+    if (!state.authReady) a.appendChild(h('p', '', '로그인 상태를 확인하는 중입니다.'));
+    else if (!state.user) { a.appendChild(h('p', '', '관리자 계정으로 로그인해야 가게 정보를 고칠 수 있습니다.')); a.appendChild(loginBtn()); }
+    else {
+      a.appendChild(h('p', '', state.user.email + ' 계정에는 관리자 권한이 없습니다. 관리자 계정으로 다시 로그인해 주세요.'));
+      var lo = h('button', 'ghost', '로그아웃'); lo.type = 'button'; lo.addEventListener('click', doLogout); a.appendChild(lo);
+    }
+    if (state.accErr) a.appendChild(h('p', 'hint err', state.accErr));
+    v.appendChild(a);
+  }
+  function renderMore(v) {
+    var hd = h('div', 'home-head'); add(hd, h('div', 'brand', '더보기'), h('div', 'brand-sub', '서강 한 바퀴 소개와 의견 보내기')); v.appendChild(hd);
+    var a = h('div', 'about');
+    add(a, h('h2', '', '서강 한 바퀴란'), h('p', '', '서강대 주변의 식당, 카페, 술집, 바를 직접 가 보고 모으는 목록입니다. 광고나 협찬 없이 확인한 곳만 싣습니다.'));
+    add(a, h('p', '', '자주 갈 맛집은 주변의 제보를 바탕으로 선정된 서강대생들이 자주 가는 맛집입니다. 자주 갈 맛집으로 올려야 한다고 판단하는 음식점은 제보해주시면 감사하겠습니다.'));
+    add(a, h('p', 'hint', '기획 및 개발 - 25학번 물리학과 신효산'));
+    v.appendChild(a);
+    var fb = h('div', 'about'); fb.appendChild(h('h2', '', '의견 보내기'));
+    fb.appendChild(h('p', '', '틀린 정보, 빠진 가게, 바라는 기능을 알려 주세요. 읽고 반영합니다.'));
+    var ul = h('ul'); ['없는 가게를 추천하고 싶어요', '영업시간·메뉴·가격이 달라요', '이런 기능이 있으면 좋겠어요, 불편한 점이 있어요'].forEach(function (t) { ul.appendChild(h('li', '', t)); }); fb.appendChild(ul);
+    if (okFormUrl(FEEDBACK.url)) { var l = h('a', 'cta', '의견 남기기'); l.href = FEEDBACK.url; l.target = '_blank'; l.rel = 'noopener noreferrer'; fb.appendChild(l); fb.appendChild(h('p', 'hint', '새 창에서 열리는 외부 양식입니다. 개인정보는 적지 않아도 됩니다.')); }
+    else fb.appendChild(h('div', 'nomenu', '의견 창구를 준비 중입니다.'));
+    v.appendChild(fb);
+    var ib = installBox(); if (ib) v.appendChild(ib);
+    v.appendChild(accountBox());
+    var nt = h('div', 'about'); nt.appendChild(h('h2', '', '이용 안내'));
+    var u2 = h('ul'); ['가격은 가게마다 표시된 확인일 기준이며 매장 사정에 따라 바뀔 수 있습니다.', '도보 시간은 직선거리에 1.3배를 곱해 분당 80m로 추정한 값이며 실제 경로가 아닙니다.', '영업시간은 목록 작성 시점 기준이고, 새벽 6시 전에는 전날 영업일로 봅니다.', '메뉴는 실제 메뉴판을 보고 하나씩 채우는 중이라 비어 있는 가게가 많습니다.', '사진은 직접 싣지 않고 네이버 지도 링크로 연결합니다.', '분류 기준은 아직 초안입니다.' + (window.__BUILT__ ? ' 데이터 기준 ' + window.__BUILT__ + '.' : '')].forEach(function (t) { u2.appendChild(h('li', '', t)); });
+    nt.appendChild(u2); v.appendChild(nt); v.appendChild(h('div', '', '')); v.lastChild.style.height = '24px';
+  }
+
+  // ---------- 즐겨찾기 ----------
+  function renderFav(v) {
+    var list = state.shops.filter(function (s) { return pub(s) && state.fav.indexOf(s.id) !== -1; }).sort(byDist);
+    var hd = h('div', 'home-head'); add(hd, h('div', 'brand', '즐겨찾기'), h('div', 'brand-sub', (state.loaded ? list.length + '곳 · ' : '') + (state.user ? '내 계정에 저장돼요' : '이 기기에만 저장돼요')));
+    v.appendChild(hd);
+    if (!state.user) {
+      var lb = h('div', 'loginbar'); add(lb, h('p', '', '로그인하면 즐겨찾기가 계정에 저장돼 다른 기기에서도 보여요.'), loginBtn('ghost'));
+      if (state.accErr) lb.appendChild(h('p', 'hint err', state.accErr));
+      v.appendChild(lb);
+    }
+    if (!state.loaded || !state.dbOk) { v.appendChild(stateMsg()); return; }
+    if (!list.length) {
+      var e = h('div', 'empty'), acts = h('div', 'acts'), b = h('button', 'pbtn primary', '가게 둘러보기'); b.type = 'button';
+      b.addEventListener('click', function () { go('list', { f: emptyF(), q: '', sort: 'near' }); }); acts.appendChild(b);
+      add(e, h('div', 't', '아직 즐겨찾기한 곳이 없어요'), h('div', 's', '가게 오른쪽의 별을 누르면 여기에 모여요.'), acts); v.appendChild(e); return;
+    }
+    var rows = h('div', 'rows'); list.forEach(function (s) { rows.appendChild(rowEl(s)); }); v.appendChild(rows);
+  }
+
+  // ---------- 상세 ----------
+  function hoursLines(s) {
+    var w = s.sched.week, lines = [], today = biz().day;
+    if (!w || !s.sched.ok) {
+      if (s.hours) s.hours.split(' / ').forEach(function (seg) { lines.push({ t: seg.replace(/BT/g, '브레이크'), today: false }); });
+      return lines;
+    }
+    var i = 0;
+    function key(v) { return v === null ? 'off' : v.open + '-' + v.close + '-' + (v.bt ? v.bt.join('~') : ''); }
+    while (i < 7) {
+      var j = i; while (j + 1 < 7 && key(w[j + 1]) === key(w[i])) j++;
+      var lbl = i === 0 && j === 6 ? '매일' : (i === j ? DAY_LABEL[i] : DAY_LABEL[i] + '–' + DAY_LABEL[j]), v = w[i], txt;
+      if (v === null) txt = '휴무'; else { txt = fmtT(v.open) + ' – ' + (v.open === 0 && v.close === 1440 ? '24:00' : fmtT(v.close)); if (v.bt) txt += ' (브레이크 ' + fmtT(v.bt[0]) + '–' + fmtT(v.bt[1]) + ')'; }
+      lines.push({ t: lbl + ' ' + txt, today: today >= i && today <= j }); i = j + 1;
+    }
+    return lines;
+  }
+  function renderDetail(v) {
+    var s = state.shops.filter(function (x) { return x.id === state.openId; })[0];
+    if (!s) { v.appendChild(stateMsg()); var bk0 = h('button', 'ghost editbtn', '목록으로'); bk0.type = 'button'; bk0.addEventListener('click', back); v.appendChild(bk0); return; }
+    var hero = h('div', 'dtop'), bk = h('button', 'back'); bk.type = 'button'; bk.setAttribute('aria-label', '뒤로'); bk.appendChild(svg('back', 22)); bk.addEventListener('click', back);
+    add(hero, bk, h('span', 'sp'), pub(s) ? favBtn(s.id, true) : null); v.appendChild(hero);
+    var hd = h('div', 'dhead'), cs = h('div', 'chips');
+    cs.appendChild(h('span', 'chip' + (!pub(s) ? ' warn' : (s.category === 'bar' || s.category === 'lounge' ? ' bar' : '')), catOf(s.category).short));
+    if (s.zone) cs.appendChild(h('span', 'chip', s.zone));
+    if (s.solo) cs.appendChild(h('span', 'chip', '혼밥 가능'));
+    add(hd, cs, h('h1', '', s.name));
+    var sub = s.kinds.join(' · '); if (sub) hd.appendChild(h('div', 'meta muted', sub)); if (s.food && s.food !== sub) hd.appendChild(h('div', '', s.food));
+    v.appendChild(hd);
+    var di = dayInfo(s, biz().day), f = h('div', 'facts');
+    var f1 = h('div', 'fact inv'); f1.appendChild(h('span', '', '오늘 마감'));
+    f1.appendChild(di.st === 'open' ? h('b', '', di.is24 ? '24h' : fmtT(di.close)) : h('b', 'sm', di.st === 'off' ? '휴무' : '미확인'));
+    var f2 = h('div', 'fact'); add(f2, h('span', '', '대표 가격'), s.price !== null ? h('b', '', fmtPrice(s.price)) : h('b', '', '—'));
+    var f3 = h('div', 'fact'); add(f3, h('span', '', state.ref && s.lat !== null ? '내 위치에서' : '서강대에서'), effDist(s) !== null ? h('b', 'k', '약 ' + walkMin(effDist(s)) + '분') : h('b', '', '—'), effDist(s) !== null ? h('span', 'sub', '직선 ' + effDist(s).toLocaleString('ko-KR') + 'm') : null);
+    add(f, f1, f2, f3); v.appendChild(f);
+    if (s.features.length) { var tl = h('div', 'tagline'); s.features.forEach(function (t) { tl.appendChild(h('span', '', t)); }); v.appendChild(tl); }
+    var info = h('div', 'info'), hl = hoursLines(s);
+    if (hl.length) { var r = h('div', 'r'), val = h('div', 'v'); hl.forEach(function (l) { val.appendChild(h('span', l.today ? 'today' : '', l.t)); }); s.sched.notes.forEach(function (n) { val.appendChild(h('span', 'muted', '※ ' + n)); }); add(r, h('span', '', '영업시간'), val); info.appendChild(r); }
+    if (s.address) { var r2 = h('div', 'r'); add(r2, h('span', '', '주소'), h('div', 'v', s.address)); info.appendChild(r2); }
+    if (info.childNodes.length) v.appendChild(info);
+    // 메뉴
+    if (s.menus.length) {
+      var secs = [], map = {};
+      s.menus.forEach(function (m) { var k = m.section || '메뉴'; if (!map[k]) { map[k] = { title: k, items: [], id: 'ms' + secs.length }; secs.push(map[k]); } map[k].items.push(m); });
+      if (secs.length > 1) {
+        var an = h('div', 'anchors'); secs.forEach(function (sc, i) { var b = h('button', i === 0 ? 'on' : '', sc.title); b.type = 'button'; b.addEventListener('click', function () { var t = document.getElementById(sc.id); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); Array.prototype.forEach.call(an.children, function (x) { x.classList.remove('on'); }); b.classList.add('on'); }); an.appendChild(b); });
+        v.appendChild(an);
+      }
+      secs.forEach(function (sc) {
+        var sec = h('div', 'msec'); sec.id = sc.id; sec.appendChild(h('h3', '', sc.title));
+        sc.items.forEach(function (m) { var it = h('div', 'mi'); add(it, h('span', '', m.name), h('span', 'pr', m.price === null ? '' : fmtPrice(m.price))); sec.appendChild(it); });
+        v.appendChild(sec);
+      });
+      v.appendChild(h('div', 'dfoot', (s.verifiedAt ? '최종 확인 ' + s.verifiedAt.replace(/-/g, '.') + ' · ' : '') + '가격은 매장 사정에 따라 바뀔 수 있습니다'));
+    } else {
+      var nm = h('div', 'nomenu'); add(nm, h('b', '', '메뉴를 준비 중이에요'), h('p', '', '메뉴와 가격은 직접 확인한 뒤 하나씩 채우고 있어요. 급하면 지도에서 먼저 확인해 주세요.')); v.appendChild(nm);
+      if (s.price !== null) v.appendChild(h('div', 'dfoot', s.verifiedAt ? '대표 가격 확인일 ' + s.verifiedAt.replace(/-/g, '.') : '대표 가격 확인일 없음'));
+    }
+    var fu = shopFormUrl(s);
+    if (fu) { var fa = h('a', 'ghost editbtn', '정보가 틀렸나요? 알려 주세요'); fa.href = fu; fa.target = '_blank'; fa.rel = 'noopener noreferrer'; fa.style.cssText = 'display:inline-flex;align-items:center'; v.appendChild(fa); }
+    if (state.dev) { var eb = h('button', 'ghost editbtn', '이 가게 수정'); eb.type = 'button'; eb.addEventListener('click', function () { go('dev', { push: true }); loadForm(s); }); v.appendChild(eb); }
+    v.appendChild(h('div', '', '')); v.lastChild.style.height = '84px';
+    if (/^https:\/\/naver\.me\//.test(s.mapUrl)) {
+      var fx = h('div', 'fixcta'), a = h('a', 'cta', '네이버 지도에서 보기'); a.href = s.mapUrl; a.target = '_blank'; a.rel = 'noopener noreferrer'; fx.appendChild(a); v.appendChild(fx);
+    }
+  }
+
+  // ---------- 개발자 입력 ----------
+  function mountDev() {
+    if (mounted) return;
+    $('dev-host').appendChild($('tpl-dev').content.cloneNode(true));
+    ['name', 'category', 'food', 'features', 'kinds', 'menus', 'zone', 'address', 'map', 'hours', 'solo', 'price', 'dist', 'verified'].forEach(function (k) { els['f' + k] = $('f-' + k); });
+    els.save = $('save'); els.reset = $('reset'); els.del = $('delete'); els.status = $('status'); els.hcheck = $('f-hours-check');
+    mounted = true;
+    var o0 = h('option', '', '분류 대기'); o0.value = ''; els.fcategory.appendChild(o0);
+    CATS.forEach(function (c) { var o = h('option', '', c.label); o.value = c.key; els.fcategory.appendChild(o); });
+    KINDS.forEach(function (k) { var lb = h('label'), cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = k; add(lb, cb, document.createTextNode(k)); els.fkinds.appendChild(lb); });
+    els.save.addEventListener('click', save);
+    $('imp-btn').addEventListener('click', importFile);
+    $('exp-btn').addEventListener('click', exportAll);
+    els.reset.addEventListener('click', function () { clearForm(); setStatus(''); });
+    els.del.addEventListener('click', remove);
+    els.fmenus.addEventListener('input', function () { state.wipeArmed = false; });
+    els.fhours.addEventListener('input', hoursCheck);
+    $('form').addEventListener('submit', function (e) { e.preventDefault(); save(); });
+  }
+  function exportAll() {
+    var st = $('exp-status');
+    try {
+      var list = state.shops.map(function (x) { return { id: x.id, data: x.raw }; });
+      var blob = new Blob([JSON.stringify({ shops: list })], { type: 'application/json' });
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'shops_export_' + new Date().toISOString().slice(0, 10) + '.json';
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      st.textContent = list.length + '곳을 내려받았습니다.'; st.className = 'status';
+    } catch (e) { st.textContent = '내보내지 못했습니다.'; st.className = 'status err'; }
+  }
+  function importFile() {
+    var f = $('imp-file').files[0], st = $('imp-status');
+    function say(t, err) { st.textContent = t; st.className = 'status' + (err ? ' err' : ''); }
+    if (!f) { say('가져올 JSON 파일을 먼저 고르십시오.', true); return; }
+    if (busy) return;
+    busy = true; say('파일을 읽는 중입니다.');
+    f.text().then(function (txt) {
+      var j = JSON.parse(txt), list = (j.shops || j).map(function (r) { return { id: String(r.id), data: r.data || r.fields || r }; });
+      if (!list.length || list.some(function (r) { return !r.id || !r.data || typeof r.data.name !== 'string'; })) throw new Error('형식이 맞지 않습니다');
+      say(list.length + '곳을 올리는 중입니다.');
+      return window.SGFB.importShops(list, function (d, n) { say(d + ' / ' + n + '곳 올렸습니다.'); }).then(function (n) { say('가져오기 완료: ' + n + '곳'); });
+    }).then(null, function (e) { say('가져오지 못했습니다: ' + (e && e.message ? e.message : errText(e)), true); }).then(function () { busy = false; });
+  }
+  function hoursCheck() {
+    var t = els.fhours.value.trim(); if (!t) { els.hcheck.textContent = ''; return; }
+    var r = parseHours(t);
+    els.hcheck.textContent = r.ok && !r.sus ? '해석됨: ' + DAY_LABEL.map(function (d, i) { var v = r.week[i]; return d + ' ' + (v === null ? '휴무' : fmtT(v.open) + '–' + fmtT(v.close)); }).join(', ')
+      : '해석 확인 필요: ' + (r.fail.length ? '읽지 못한 구간 "' + r.fail.join('", "') + '" ' : '') + (r.missing.length ? '요일 누락(' + r.missing.join('·') + ') ' : '') + (r.sus ? '영업 시간이 20시간을 넘는 날이 있음' : '');
+  }
+  function setStatus(msg, err) { els.status.textContent = msg || ''; els.status.className = 'status' + (err ? ' err' : ''); }
+  function disarm() { els.del.classList.remove('armed'); els.del.textContent = '삭제'; }
+  function setKinds(arr) { Array.prototype.forEach.call(els.fkinds.querySelectorAll('input'), function (cb) { cb.checked = arr.indexOf(cb.value) !== -1; }); }
+  function getKinds() { return Array.prototype.filter.call(els.fkinds.querySelectorAll('input'), function (cb) { return cb.checked; }).map(function (cb) { return cb.value; }); }
+  function menusToText(ms) { var cur = '', out = []; ms.forEach(function (m) { if (m.section && m.section !== cur) out.push('## ' + m.section); cur = m.section; out.push(m.name + (m.price === null ? '' : ' ' + m.price)); }); return out.join('\n'); }
+  function parseMenus(txt) {
+    var sec = '', out = [];
+    txt.split('\n').map(function (l) { return l.trim(); }).filter(Boolean).forEach(function (l) {
+      if (l.indexOf('##') === 0) { sec = l.replace(/^#+\s*/, '').trim(); return; }
+      var m = l.match(/^(.*?)[\s,]+([0-9][0-9,]*)\s*원?$/), it = (m && m[1].trim()) ? { name: m[1].trim(), price: Number(m[2].replace(/,/g, '')) } : { name: l, price: null };
+      if (sec) it.section = sec; out.push(it);
+    });
+    return out;
+  }
+  function clearForm() {
+    state.editId = null; state.wipeArmed = false;
+    els.fname.value = ''; els.ffood.value = ''; els.ffeatures.value = ''; els.fprice.value = ''; els.fdist.value = ''; els.fverified.value = ''; setKinds([]); els.fmenus.value = ''; els.fzone.value = ''; els.faddress.value = ''; els.fmap.value = ''; els.fhours.value = ''; els.fsolo.checked = false; els.fcategory.value = ''; els.hcheck.textContent = '';
+    els.del.hidden = true; disarm();
+  }
+  function loadForm(s) {
+    mountDev(); state.editId = s.id; state.wipeArmed = false;
+    els.fname.value = s.name; els.ffood.value = s.food; els.ffeatures.value = s.features.join(', '); setKinds(s.kinds); els.fmenus.value = menusToText(s.menus); els.fzone.value = s.zone; els.faddress.value = s.address; els.fmap.value = s.mapUrl; els.fhours.value = s.hours; els.fsolo.checked = s.solo;
+    els.fcategory.value = s.category; els.fprice.value = s.price === null ? '' : String(s.price); els.fdist.value = s.distanceM === null ? '' : String(s.distanceM); els.fverified.value = s.verifiedAt;
+    els.del.hidden = false; disarm(); hoursCheck(); setStatus('"' + s.name + '" 수정 중입니다.');
+  }
+  function errText(e) {
+    var c = e && e.code;
+    if (c === 'permission-denied') return '저장하지 못했습니다. 관리자 계정으로 로그인되어 있지 않거나 권한이 없습니다.';
+    if (c === 'resource-exhausted') return '무료 사용 한도에 도달했거나 요청이 너무 잦습니다. 잠시 뒤 다시 시도하십시오.';
+    if (c === 'unavailable') return '서버에 연결하지 못했습니다. 네트워크를 확인하십시오.';
+    return '저장하지 못했습니다. 잠시 뒤 다시 시도하십시오.';
+  }
+  var busy = false;
+  function save() {
+    if (!db || busy) return;
+    var name = els.fname.value.trim(); if (!name) { setStatus('가게 이름을 입력하십시오.', true); els.fname.focus(); return; }
+    var price = els.fprice.value === '' ? null : Number(els.fprice.value);
+    if (price !== null && (!isFinite(price) || price < 0)) { setStatus('가격은 0 이상의 숫자로 입력하십시오.', true); return; }
+    var dist = els.fdist.value === '' ? null : Number(els.fdist.value);
+    if (dist !== null && (!isFinite(dist) || dist < 0)) { setStatus('거리는 0 이상의 숫자로 입력하십시오.', true); return; }
+    var menus = parseMenus(els.fmenus.value), cur0 = state.editId ? state.shops.filter(function (x) { return x.id === state.editId; })[0] : null;
+    // 메뉴 보호: 기존 메뉴가 있는데 입력란이 비어 있으면 한 번 더 확인한다.
+    if (cur0 && cur0.menus.length && !menus.length && !state.wipeArmed) {
+      state.wipeArmed = true; setStatus('메뉴 입력란이 비어 있습니다. 저장하면 기존 메뉴 ' + cur0.menus.length + '개가 지워집니다. 지우려는 것이 맞으면 저장을 한 번 더 누르십시오.', true); return;
+    }
+    var doc = {
+      solo: els.fsolo.checked, zone: els.fzone.value, address: els.faddress.value.trim(), mapUrl: els.fmap.value.trim(), hours: els.fhours.value.trim(), distanceM: dist,
+      kinds: getKinds(), menus: menus, name: name, food: els.ffood.value.trim(), features: els.ffeatures.value.split(/[,\n]/).map(function (t) { return t.trim(); }).filter(Boolean),
+      category: els.fcategory.value, price: price, verifiedAt: els.fverified.value || '', updatedAt: new Date().toISOString()
+    };
+    if (cur0) doc = Object.assign({}, cur0.raw, doc);
+    var col = db.collection('shops'), ref = state.editId ? col.doc(state.editId) : col.doc();
+    busy = true; els.save.disabled = true; setStatus('저장 중입니다.');
+    ref.set(doc).then(function () { setStatus('저장했습니다: ' + name); clearForm(); }, function (e) { setStatus(errText(e), true); }).then(function () { busy = false; els.save.disabled = false; });
+  }
+  function remove() {
+    if (!db || !state.editId || busy) return;
+    if (!els.del.classList.contains('armed')) { els.del.classList.add('armed'); els.del.textContent = '한 번 더 눌러 삭제'; setTimeout(disarm, 4000); return; }
+    var id = state.editId; busy = true;
+    db.collection('shops').doc(id).delete(state.shops.filter(function (x) { return x.id === id; }).map(function (x) { return x.name; })[0]).then(function () { setStatus('삭제했습니다.'); clearForm(); }, function (e) { setStatus(errText(e), true); }).then(function () { busy = false; });
+  }
+
+  // ---------- 분류 대기 정리 (관리자 전용) ----------
+  function triSet(s, key) {
+    if (!db || busy) return; busy = true;
+    var doc = Object.assign({}, s.raw, { category: key, updatedAt: new Date().toISOString() });
+    db.collection('shops').doc(s.id).set(doc).then(function () { state.triLast = { id: s.id, name: s.name, key: key }; }, function (e) { state.triLast = { err: errText(e) }; }).then(function () { busy = false; render(); });
+  }
+  function triUndo() {
+    var l = state.triLast; if (!l || !l.id || !db || busy) return;
+    var s = state.shops.filter(function (x) { return x.id === l.id; })[0]; if (!s) return; busy = true;
+    db.collection('shops').doc(s.id).set(Object.assign({}, s.raw, { category: '', updatedAt: new Date().toISOString() })).then(function () { state.triLast = null; }, function (e) { state.triLast = { err: errText(e) }; }).then(function () { busy = false; render(); });
+  }
+  function renderTriage(v) {
+    var pend = state.shops.filter(function (s) { return !pub(s); });
+    var head = h('div', 'home-head'); add(head, h('div', 'brand', '분류 대기 정리'), h('div', 'brand-sub', state.loaded ? '종류를 누르면 바로 저장되고 공개 목록에 들어갑니다 · 남은 ' + pend.length + '곳' : '불러오는 중'));
+    v.appendChild(head);
+    if (!state.loaded || !state.dbOk) { v.appendChild(stateMsg()); return; }
+    var l = state.triLast;
+    if (l) {
+      var bar = h('div', 'trimsg' + (l.err ? ' err' : ''));
+      if (l.err) bar.appendChild(h('span', '', l.err));
+      else { bar.appendChild(h('span', '', l.name + ' → ' + catOf(l.key).short + ' 저장했어요')); var ub = h('button', '', '되돌리기'); ub.type = 'button'; ub.addEventListener('click', triUndo); bar.appendChild(ub); }
+      v.appendChild(bar);
+    }
+    var seg = h('div', 'mapchips');
+    [''].concat(ZONES).forEach(function (z) {
+      var n = pend.filter(function (s) { return !z || s.zone === z; }).length;
+      var b = h('button', 'pbtn', (z || '전체') + ' ' + n); b.type = 'button'; b.setAttribute('aria-pressed', String(state.triZone === z));
+      b.addEventListener('click', function () { state.triZone = z; render(); }); seg.appendChild(b);
+    });
+    v.appendChild(seg);
+    var list = pend.filter(function (s) { return !state.triZone || s.zone === state.triZone; }).sort(function (a, b) { return (a.zone || '힣').localeCompare(b.zone || '힣', 'ko') || a.name.localeCompare(b.name, 'ko'); });
+    if (!list.length) { v.appendChild(h('div', 'empty', '분류할 가게가 없어요')); return; }
+    var wrap = h('div', 'tri');
+    list.forEach(function (s) {
+      var c = h('div', 'tricard'), top = h('div', 'tritop');
+      add(top, h('b', '', s.name), h('span', 'trimeta', [s.zone || '구역 없음', s.food].filter(Boolean).join(' · ')));
+      c.appendChild(top);
+      var info = [s.kinds.join('·'), s.price !== null ? s.price.toLocaleString('ko-KR') + '원' : '', s.hours || '영업시간 미확인'].filter(Boolean).join(' · ');
+      c.appendChild(h('div', 'triinfo', info));
+      if (s.menus.length) c.appendChild(h('div', 'triinfo', '메뉴 ' + s.menus.slice(0, 3).map(function (m) { return m.name; }).join(', ') + (s.menus.length > 3 ? ' 외 ' + (s.menus.length - 3) : '')));
+      var row = h('div', 'trichips');
+      CATS.forEach(function (ct) { var b = h('button', 'pbtn tri', ct.short); b.type = 'button'; b.addEventListener('click', function () { triSet(s, ct.key); }); row.appendChild(b); });
+      if (s.mapUrl) { var a = h('a', 'pbtn tri map', '지도'); a.href = s.mapUrl; a.target = '_blank'; a.rel = 'noopener'; row.appendChild(a); }
+      c.appendChild(row); wrap.appendChild(c);
+    });
+    v.appendChild(wrap);
+  }
+
+  // ---------- 렌더 ----------
+  function render() {
+    var v = els.main; v.textContent = ''; var view = state.view;
+    if (window.__ADMIN__ && !state.dev) { var gv = h('div', 'view'); renderGate(gv); v.appendChild(gv); els.tabbar.textContent = ''; els.tabbar.hidden = true; return; }
+    if ((view === 'dev' || view === 'triage') && !state.dev) view = state.view = 'home';
+    if (view === 'detail' && !state.openId) view = state.view = 'home';
+    var box = h('div', 'view'); box.dataset.view = view;
+    if (view === 'home') renderHome(box); else if (view === 'list') renderList(box); else if (view === 'near') renderNear(box); else if (view === 'pick') renderPick(box);
+    else if (view === 'triage') renderTriage(box); else if (view === 'detail') renderDetail(box); else if (view === 'fav') renderFav(box); else if (view === 'more') renderMore(box);
+    else if (view === 'dev') { var host = h('div'); host.id = 'dev-host'; box.appendChild(host); }
+    v.appendChild(box);
+    if (view === 'list') renderListBody();
+    if (view === 'near') renderNearBody();
+    if (view === 'dev') { mounted = false; mountDev(); clearForm(); }
+    renderTabs();
+  }
+
+  els.main = $('main'); els.tabbar = $('tabbar'); els.scrim = $('scrim'); els.sheet = $('sheet');
+  els.scrim.addEventListener('click', function (e) { if (e.target === els.scrim) closeSheet(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { if (!els.scrim.hidden) closeSheet(); else if (state.view === 'detail') back(); return; }
+    if (e.key === 'Tab' && !els.scrim.hidden) {
+      var fs = els.sheet.querySelectorAll('button, [href], input, select, textarea'); if (!fs.length) return;
+      var first = fs[0], last = fs[fs.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === els.sheet)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  render();
+  var hashDone = false, favUnsub = null, byId = {};
+  function put(id, d) { if (d && d.deleted) delete byId[id]; else byId[id] = normalize(id, d); }
+  function flush() { state.shops = Object.keys(byId).map(function (k) { return byId[k]; }); }
+  function openHash() {
+    if (hashDone) return; hashDone = true;
+    var h0 = ''; try { h0 = location.hash.replace('#', ''); } catch (e) {}
+    if (h0 && state.shops.some(function (x) { return x.id === h0; })) { state.openId = h0; state.view = 'detail'; }
+  }
+  function refreshData() {
+    state.loaded = true; state.dbOk = true; openHash();
+    if (state.view === 'detail' && !state.shops.some(function (x) { return x.id === state.openId; })) { state.openId = null; state.view = 'home'; }
+    if (state.view === 'triage') { var y0 = window.scrollY; render(); window.scrollTo(0, y0); return; }
+    if (state.view === 'dev') { renderTabs(); return; }
+    var ae = document.activeElement, typing = ae && ae.id === 'q'; if (typing && state.view === 'list') { renderListBody(); renderTabs(); return; }
+    render();
+  }
+  function refreshFavUi() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fav]'), function (x) { paintFav(x, state.fav.indexOf(x.dataset.fav) !== -1); });
+    if (state.view === 'fav') repaint();
+  }
+  function watchUserFavs(u) {
+    if (favUnsub) { favUnsub(); favUnsub = null; }
+    state.favSync = false;
+    var firstSnap = true;
+    favUnsub = window.SGFB.watchFavs(u.uid, function (remote) {
+      if (firstSnap) {
+        firstSnap = false; var next, owner = store('sg-fav-owner') || '';
+        // sg-fav-owner: 이 기기의 로컬 목록이 누구 것인지. ''이면 로그인 전에 이 기기에서 쌓은 것.
+        if (owner === '') { next = (remote || []).slice(); state.fav.forEach(function (id) { if (next.indexOf(id) === -1) next.push(id); }); }
+        else if (owner === u.uid) next = remote ? remote.slice() : state.fav.slice();
+        else next = (remote || []).slice(); // 다른 계정이 남긴 로컬 목록은 이 계정에 합치지 않고 버린다
+        state.fav = next; store('sg-fav', JSON.stringify(next)); store('sg-fav-owner', u.uid); state.favSync = true;
+        if (!remote || remote.length !== next.length) window.SGFB.setFavs(u.uid, next).catch(function () {});
+      } else if (remote) { state.fav = remote.slice(); store('sg-fav', JSON.stringify(state.fav)); }
+      refreshFavUi();
+    }, function () { state.favSync = false; });
+  }
+  function applyUser(u) {
+    state.user = u; state.authReady = true; state.delArmed = false;
+    if (window.__ADMIN__) state.dev = window.SGFB.isAdmin(u);
+    if (u) watchUserFavs(u);
+    else {
+      if (favUnsub) { favUnsub(); favUnsub = null; } state.favSync = false;
+      // 로그아웃(또는 세션 만료) 시 계정의 즐겨찾기 사본을 이 기기에서 지운다. 로그인 전에 쌓은 목록(owner '')은 건드리지 않는다.
+      if (store('sg-fav-owner')) { state.fav = []; store('sg-fav', '[]'); store('sg-fav-owner', ''); }
+    }
+    repaint();
+  }
+  function withFB(cb, fail) {
+    if (window.SGFB) { cb(window.SGFB); return; }
+    var n = 0, t = setInterval(function () { if (window.SGFB) { clearInterval(t); cb(window.SGFB); } else if (++n > 150) { clearInterval(t); if (fail) fail(); } }, 100);
+  }
+  function shim(SG) {
+    return { collection: function () { return {
+      doc: function (id) { var did = id || SG.newId(); return { id: did, set: function (d) { return SG.saveShop(did, d); }, delete: function (name) { return SG.removeShop(did, name); } }; }
+    }; } };
+  }
+  if (window.__ADMIN__) {
+    // 관리 페이지: 모든 문서를 실시간으로 받고, 관리자 계정으로 로그인해야 입력 화면이 열린다.
+    withFB(function (SG) {
+      db = shim(SG);
+      SG.onAuth(applyUser);
+      SG.watchAll(function (docs) { byId = {}; docs.forEach(function (d) { put(d.id, d.data); }); flush(); refreshData(); }, function () { state.loaded = true; state.dbOk = false; render(); });
+    }, function () { state.loaded = true; state.dbOk = false; state.authReady = true; render(); });
+    return;
+  }
+  // 공개 페이지: 배포본에 담긴 목록을 먼저 보여 주고, 그 뒤에 바뀐 가게만 서버에서 받아 합친다.
+  if (window.__SHOPS__) {
+    window.__SHOPS__.forEach(function (r) { byId[r[0]] = normalize(r[0], r[1]); }); flush();
+    state.loaded = true; state.dbOk = true; openHash(); render();
+  }
+  withFB(function (SG) {
+    SG.onAuth(applyUser);
+    SG.watchDelta(window.__SINCE__ || '1970-01-01T00:00:00.000Z', function (docs) { docs.forEach(function (d) { put(d.id, d.data); }); flush(); refreshData(); }, function () { if (!window.__SHOPS__) { state.loaded = true; state.dbOk = false; render(); } });
+  }, function () { state.authReady = true; if (!window.__SHOPS__) { state.loaded = true; state.dbOk = false; } render(); });
+})();
+</script>
